@@ -33,7 +33,7 @@ export const useParaSolanaSigner = () => {
       return null;
     }
     
-    const wallets = para.getWalletsByType({ type: 'Solana' });
+    const wallets = para.getWalletsByType('SOLANA');
     if (!wallets || wallets.length === 0) {
       return null;
     }
@@ -49,7 +49,7 @@ export const useParaSolanaSigner = () => {
   const publicKey = useMemo(() => {
     if (isUsingPara && paraSigner) {
       // Get public key from Para wallet
-      const wallets = para?.getWalletsByType({ type: 'Solana' });
+      const wallets = para?.getWalletsByType('SOLANA');
       if (wallets && wallets.length > 0) {
         try {
           return new PublicKey(wallets[0].address);

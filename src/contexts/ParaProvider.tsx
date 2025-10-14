@@ -39,28 +39,20 @@ export const ParaProvider: FC<ParaProviderProps> = ({ children }) => {
         paraClientConfig={{
           env: Environment.BETA, // Use Environment.PROD for production
           apiKey: paraApiKey,
-          disableAutoSessionKeepAlive: false, // Enable automatic session keep-alive
-          disableCosmosConnector: true, // Disable Cosmos - Solana-only
-          disableEvmConnector: true, // Disable EVM - Solana-only
         }}
         externalWalletConfig={{
-          appName: 'Solana Merchant AI',
           wallets: ['PHANTOM', 'SOLFLARE', 'BACKPACK'],
           solanaConnector: {
             config: {
+              chain: 'SOLANA' as any,
               endpoint: heliusEndpoint,
-              // You can also specify commitment level
-              // commitment: 'confirmed',
             },
           },
-          // WalletConnect project ID (dummy for development, prevents warning)
           walletConnect: {
             projectId: '2c4b1b6d8e3a4f5c9d7e8f1a2b3c4d5e',
           },
         }}
         paraModalConfig={{
-          // Solana-only mode
-          enabledChains: ['SOLANA'],
           // Enable OAuth methods for easy onboarding
           oAuthMethods: ['GOOGLE'],
           // Layout configuration
@@ -72,7 +64,6 @@ export const ParaProvider: FC<ParaProviderProps> = ({ children }) => {
         }}
         config={{
           appName: 'Solana Merchant AI',
-          appDescription: 'AI-powered POS with multi-token payments and automated settlement',
         }}
       >
         {children}

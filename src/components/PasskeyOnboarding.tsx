@@ -24,7 +24,7 @@ export const PasskeyOnboarding = () => {
   const { openModal } = useModal();
   const { isConnected } = useAccount();
   const { data: wallet } = useWallet();
-  const { mutate: logoutPara } = useLogout();
+  const logout = useLogout();
   const [step, setStep] = useState<'intro' | 'connecting' | 'success'>('intro');
 
   // Debug: verificar estado de conexão
@@ -46,13 +46,17 @@ export const PasskeyOnboarding = () => {
     navigate('/');
   };
 
-  const handleDisconnect = () => {
-    logoutPara();
-    toast({
-      title: '👋 Desconectado',
-      description: 'Você foi desconectado com sucesso',
-    });
-    setStep('intro');
+  const handleDisconnect = async () => {
+    try {
+      await logout.logoutAsync();
+      toast({
+        title: '👋 Desconectado',
+        description: 'Você foi desconectado com sucesso',
+      });
+      setStep('intro');
+    } catch (e) {
+      console.error('Erro ao desconectar:', e);
+    }
   };
 
   const features = [

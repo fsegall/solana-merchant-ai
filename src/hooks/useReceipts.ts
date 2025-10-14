@@ -54,8 +54,7 @@ export function useReceipts() {
       await supabaseHelpers.createInvoiceWithPayment(
         amount,
         ref,
-        productIds || [],
-        solanaReference
+        productIds || []
       );
 
       const updatedReceipts = await fetchReceipts();

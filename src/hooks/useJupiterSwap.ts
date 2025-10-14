@@ -54,9 +54,13 @@ export function useJupiterSwap() {
 
       const jupiterClient = createJupiterApiClient({ basePath: JUPITER_API_URL });
       
+      // Ensure strings for API call
+      const inputMintStr = typeof inputMint === 'string' ? inputMint : String(inputMint);
+      const targetMintStr = typeof targetMint === 'string' ? targetMint : String(targetMint);
+      
       const quote = await jupiterClient.quoteGet({
-        inputMint,
-        outputMint: targetMint,
+        inputMint: inputMintStr,
+        outputMint: targetMintStr,
         amount: amountInMinorUnits,
         slippageBps: 50, // 0.5% slippage tolerance
         onlyDirectRoutes: false,
@@ -85,10 +89,14 @@ export function useJupiterSwap() {
         fee,
         routes: quote.routePlan?.length
       });
-
+      
+      // Ensure strings for return value
+      const inputMintReturn = typeof inputMint === 'string' ? inputMint : String(inputMint);
+      const targetMintReturn = typeof targetMint === 'string' ? targetMint : String(targetMint);
+      
       return {
-        inputMint,
-        outputMint: targetMint,
+        inputMint: inputMintReturn,
+        outputMint: targetMintReturn,
         inAmount: inAmount.toString(),
         outAmount: outAmount.toString(),
         priceImpactPct,
@@ -125,7 +133,6 @@ export function useJupiterSwap() {
           quoteResponse: quote.route,
           userPublicKey: publicKey.toBase58(),
           wrapAndUnwrapSol: true,
-          computeUnitPriceMicroLamports: 'auto',
           // dynamicComputeUnitLimit: true, // Auto-calculate compute units
         },
       });

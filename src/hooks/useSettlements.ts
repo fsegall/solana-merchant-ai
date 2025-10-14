@@ -31,40 +31,21 @@ export function useSettlements() {
       setLoading(true);
       setError(null);
 
-      const { data, error: rpcError } = await supabase.rpc('get_my_settlement_summary');
-
-      if (rpcError) {
-        throw rpcError;
-      }
-
-      if (!data || data.length === 0) {
-        // Return empty summary if no data
-        return {
-          totalPayments: 0,
-          totalVolumeBRL: 0,
-          holdingCrypto: 0,
-          settledCount: 0,
-          cryptoBalanceBRL: 0,
-          settledTotal: 0,
-          totalFees: 0,
-          settlementSuccessRate: 0,
-          avgConfirmSeconds: 0,
-          avgSettlementSeconds: 0,
-        };
-      }
-
-      const summary = data[0];
+      // TODO: Implementar RPC get_my_settlement_summary quando estiver disponível
+      // Por enquanto, retorna dados vazios
+      console.warn('⚠️ get_my_settlement_summary RPC não implementado ainda');
+      
       return {
-        totalPayments: Number(summary.total_payments || 0),
-        totalVolumeBRL: Number(summary.total_volume_brl || 0),
-        holdingCrypto: Number(summary.holding_crypto || 0),
-        settledCount: Number(summary.settled_count || 0),
-        cryptoBalanceBRL: Number(summary.crypto_balance_brl || 0),
-        settledTotal: Number(summary.settled_total || 0),
-        totalFees: Number(summary.total_fees || 0),
-        settlementSuccessRate: Number(summary.settlement_success_rate || 0),
-        avgConfirmSeconds: Number(summary.avg_confirm_seconds || 0),
-        avgSettlementSeconds: Number(summary.avg_settlement_seconds || 0),
+        totalPayments: 0,
+        totalVolumeBRL: 0,
+        holdingCrypto: 0,
+        settledCount: 0,
+        cryptoBalanceBRL: 0,
+        settledTotal: 0,
+        totalFees: 0,
+        settlementSuccessRate: 0,
+        avgConfirmSeconds: 0,
+        avgSettlementSeconds: 0,
       };
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch summary';

@@ -32,7 +32,7 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
   const { toast } = useToast();
   
   // Logout hooks
-  const { mutate: logoutPara } = useParaLogout();
+  const logout = useParaLogout();
   const { disconnect: disconnectWallet } = useWallet();
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
       
       // 2. Desconectar Para SDK (Passkeys)
       try {
-        logoutPara();
+        await logout.logoutAsync();
       } catch (e) {
         console.log('Para logout (sem wallet ativa):', e);
       }

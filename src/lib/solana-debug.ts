@@ -16,60 +16,69 @@ export async function debugSolanaPayLink(link: string) {
     
     // Extract parameters
     const parsed = parseURL(link);
+    
+    // Type guard to check if it's a TransferRequestURL
+    const isTransferRequest = 'recipient' in parsed;
+    
     console.log('📊 Parsed parameters:', {
-      recipient: parsed.recipient?.toString(),
-      amount: parsed.amount?.toString(),
-      splToken: parsed.splToken?.toString(),
-      reference: parsed.reference?.toString(),
+      recipient: isTransferRequest ? parsed.recipient?.toString() : 'N/A (TransactionRequest)',
+      amount: isTransferRequest ? parsed.amount?.toString() : 'N/A',
+      splToken: isTransferRequest ? parsed.splToken?.toString() : undefined,
+      reference: isTransferRequest ? parsed.reference?.toString() : undefined,
       label: parsed.label,
       message: parsed.message,
     });
     
-    // Validate recipient
-    try {
-      new PublicKey(parsed.recipient);
-      console.log('✅ Recipient is valid PublicKey');
-    } catch (e) {
-      console.error('❌ Invalid recipient:', e);
-    }
-    
-    // Validate reference
-    try {
-      if (parsed.reference) {
-        new PublicKey(parsed.reference);
-        console.log('✅ Reference is valid PublicKey');
+    if (isTransferRequest) {
+      // Validate recipient
+      try {
+        new PublicKey(parsed.recipient);
+        console.log('✅ Recipient is valid PublicKey');
+      } catch (e) {
+        console.error('❌ Invalid recipient:', e);
       }
-    } catch (e) {
-      console.error('❌ Invalid reference:', e);
-    }
-    
-    // Validate SPL token (if present)
-    try {
-      if (parsed.splToken) {
-        new PublicKey(parsed.splToken);
-        console.log('✅ SPL Token is valid PublicKey');
+      
+      // Validate reference
+      try {
+        if (parsed.reference) {
+          new PublicKey(parsed.reference);
+          console.log('✅ Reference is valid PublicKey');
+        }
+      } catch (e) {
+        console.error('❌ Invalid reference:', e);
+      }
+      
+      // Validate SPL token (if present)
+      try {
+        if (parsed.splToken) {
+          new PublicKey(parsed.splToken);
+          console.log('✅ SPL Token is valid PublicKey');
+        } else {
+          console.warn('⚠️ No SPL token specified (will use SOL)');
+        }
+      } catch (e) {
+        console.error('❌ Invalid SPL token:', e);
+      }
+      
+      // Check amount
+      if (parsed.amount) {
+        console.log('✅ Amount:', parsed.amount.toString());
+        if (parsed.amount.isNaN() || parsed.amount.isLessThanOrEqualTo(0)) {
+          console.error('❌ Invalid amount: must be > 0');
+        }
       } else {
-        console.warn('⚠️ No SPL token specified (will use SOL)');
+        console.warn('⚠️ No amount specified');
       }
-    } catch (e) {
-      console.error('❌ Invalid SPL token:', e);
-    }
-    
-    // Check amount
-    if (parsed.amount) {
-      console.log('✅ Amount:', parsed.amount.toString());
-      if (parsed.amount.isNaN() || parsed.amount.isLessThanOrEqualTo(0)) {
-        console.error('❌ Invalid amount: must be > 0');
-      }
+      
+      console.log('\n🎯 Summary:');
+      console.log('- Recipient OK?', !!parsed.recipient);
+      console.log('- Amount OK?', parsed.amount && parsed.amount.isGreaterThan(0));
+      console.log('- SPL Token OK?', !!parsed.splToken);
+      console.log('- Reference OK?', !!parsed.reference);
     } else {
-      console.warn('⚠️ No amount specified');
+      console.log('ℹ️ This is a TransactionRequest (not a TransferRequest)');
+      console.log('✅ Link parsed successfully');
     }
-    
-    console.log('\n🎯 Summary:');
-    console.log('- Recipient OK?', !!parsed.recipient);
-    console.log('- Amount OK?', parsed.amount && parsed.amount.isGreaterThan(0));
-    console.log('- SPL Token OK?', !!parsed.splToken);
-    console.log('- Reference OK?', !!parsed.reference);
     
   } catch (error) {
     console.error('❌ Error parsing link:', error);
