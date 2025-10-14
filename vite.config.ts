@@ -43,6 +43,8 @@ export default defineConfig(({ mode }) => ({
     },
     commonjsOptions: {
       transformMixedEsModules: true,
+      defaultIsModuleExports: true,
+      requireReturnsDefault: 'auto',
     },
   },
   optimizeDeps: {
