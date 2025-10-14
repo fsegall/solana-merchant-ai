@@ -46,11 +46,11 @@ serve(async (req) => {
   const DEMO_MODE = Deno.env.get('DEMO_MODE') === 'true';
 
   try {
-    // Buscar invoice por reference
+    // Buscar invoice por Solana reference (PublicKey)
     const { data: invoice, error: invoiceError } = await supabase
       .from('invoices')
       .select('*')
-      .eq('ref', reference)
+      .eq('reference', reference)
       .single();
 
     console.log('📋 Invoice query result:', { invoice, error: invoiceError });
@@ -147,9 +147,10 @@ serve(async (req) => {
         // For now, if transaction exists and succeeded, we accept it
         console.log('✅ Marking as confirmed with real tx hash');
         
-        // Marcar como confirmado com tx hash real
+        // Marcar como confirmado com tx hash real  
+        // Use invoice.ref (not the solana reference) for mark_confirmed
         const { error: confirmError } = await supabase.rpc('mark_confirmed', { 
-          _ref: reference, 
+          _ref: invoice.ref, 
           _tx_hash: txSignature 
         });
 
@@ -170,8 +171,9 @@ serve(async (req) => {
     }
 
     // DEMO_MODE: Marcar como confirmado automaticamente
+    // Use invoice.ref (not the solana reference) for mark_confirmed
     const { error } = await supabase.rpc('mark_confirmed', { 
-      _ref: reference, 
+      _ref: invoice.ref, 
       _tx_hash: `DEMO_${Date.now()}` 
     });
 

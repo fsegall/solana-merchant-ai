@@ -33,11 +33,12 @@ export const supabaseHelpers = {
         createdAt: item.created_at,
         status: item.status as Receipt['status'],
         ref: item.ref,
+        reference: item.reference || undefined,
         txHash: item.tx_hash || undefined,
         productIds: item.product_ids || undefined,
         paymentId: item.payment_id || undefined,
       };
-      console.log('🟡 Mapped receipt:', { ref: mapped.ref, paymentId: mapped.paymentId });
+      console.log('🟡 Mapped receipt:', { ref: mapped.ref, reference: mapped.reference, paymentId: mapped.paymentId });
       return mapped;
     });
   },

@@ -6,6 +6,7 @@ export type Receipt = {
   createdAt: string;
   status: ReceiptStatus;
   ref: string;
+  reference?: string; // Solana Pay reference (PublicKey) for on-chain validation
   txHash?: string;
   productIds?: string[];
   paymentId?: string;
