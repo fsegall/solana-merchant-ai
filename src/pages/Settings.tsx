@@ -179,7 +179,14 @@ export default function Settings() {
               </div>
               <Switch
                 checked={flags?.demoMode || false}
-                onCheckedChange={(checked) => updateFlags({ demoMode: checked })}
+                onCheckedChange={async (checked) => {
+                  await updateFlags({ demoMode: checked });
+                  toast.success(
+                    checked 
+                      ? '✅ Modo Demo ativado' 
+                      : '✅ Modo Demo desativado'
+                  );
+                }}
               />
             </div>
           </div>

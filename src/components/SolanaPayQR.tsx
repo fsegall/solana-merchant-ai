@@ -3,11 +3,11 @@ import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
 import { createTransferInstruction, getAssociatedTokenAddress } from '@solana/spl-token';
 import BigNumber from 'bignumber.js';
 import { useSolanaPay, PaymentRequest } from '@/hooks/useSolanaPay';
-import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import { useParaSolanaSigner } from '@/hooks/useParaSolanaSigner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Copy, RefreshCw, CheckCircle2, Clock, Wallet } from 'lucide-react';
+import { Loader2, Copy, RefreshCw, CheckCircle2, Clock, Wallet, Fingerprint } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getBrzMint } from '@/lib/solana-config';
 import { DebugPanel } from '@/components/DebugPanel';
@@ -51,8 +51,7 @@ export function SolanaPayQR({
   
   const { createPaymentRequest, validatePayment, isGenerating, error } = useSolanaPay();
   const { toast } = useToast();
-  const { publicKey, sendTransaction } = useWallet();
-  const { connection } = useConnection();
+  const { publicKey, sendTransaction, connection, walletType, isUsingParaWallet } = useParaSolanaSigner();
   const { processAutoSwap } = useAutoSwap();
 
   const generateQR = async () => {
@@ -374,15 +373,19 @@ export function SolanaPayQR({
                 </>
               ) : (
                 <>
-                  <Wallet className="w-4 h-4 mr-2" />
-                  Pagar com Wallet Conectada
+                  {isUsingParaWallet ? (
+                    <Fingerprint className="w-4 h-4 mr-2" />
+                  ) : (
+                    <Wallet className="w-4 h-4 mr-2" />
+                  )}
+                  {isUsingParaWallet ? 'Pagar com Passkey' : 'Pagar com Wallet Conectada'}
                 </>
               )}
             </Button>
           ) : (
             <Alert>
               <AlertDescription className="text-sm">
-                💡 <strong>Desktop:</strong> Conecte sua wallet no header para pagar com um clique!
+                💡 <strong>Desktop:</strong> Conecte sua wallet ou use Passkeys para pagar com um clique!
               </AlertDescription>
             </Alert>
           )}

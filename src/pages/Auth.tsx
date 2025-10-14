@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { PasskeyOnboarding } from '@/components/PasskeyOnboarding';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -57,52 +59,76 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>{isSignUp ? 'Criar Conta' : 'Login'}</CardTitle>
-          <CardDescription>
-            {isSignUp
-              ? 'Crie uma nova conta para acessar o sistema'
-              : 'Entre com suas credenciais'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Input
-                type="password"
-                placeholder="Senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Processando...' : isSignUp ? 'Criar Conta' : 'Entrar'}
-            </Button>
-          </form>
+      <div className="w-full max-w-2xl">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-2">Solana Merchant AI</h1>
+          <p className="text-muted-foreground">Escolha como deseja autenticar</p>
+        </div>
 
-          <div className="mt-4 text-center">
-            <button
-              type="button"
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              {isSignUp ? 'Já tem conta? Faça login' : 'Não tem conta? Crie uma'}
-            </button>
-          </div>
-        </CardContent>
-      </Card>
+        <Tabs defaultValue="passkey" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="passkey">
+              🔐 Passkeys (Recomendado)
+            </TabsTrigger>
+            <TabsTrigger value="email">
+              📧 Email & Senha
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="passkey">
+            <PasskeyOnboarding />
+          </TabsContent>
+
+          <TabsContent value="email">
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>{isSignUp ? 'Criar Conta' : 'Login'}</CardTitle>
+                <CardDescription>
+                  {isSignUp
+                    ? 'Crie uma nova conta para acessar o sistema'
+                    : 'Entre com suas credenciais'}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <Input
+                      type="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      type="password"
+                      placeholder="Senha"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Processando...' : isSignUp ? 'Criar Conta' : 'Entrar'}
+                  </Button>
+                </form>
+
+                <div className="mt-4 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setIsSignUp(!isSignUp)}
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    {isSignUp ? 'Já tem conta? Faça login' : 'Não tem conta? Crie uma'}
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

@@ -1,18 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { supabaseHelpers } from '@/lib/supabase-helpers';
 import { MerchantInfo, FeatureFlags } from '@/types/store';
+
+// Custom event for merchant updates
+const MERCHANT_UPDATE_EVENT = 'merchant-updated';
 
 export function useMerchant() {
   const [merchant, setMerchant] = useState<MerchantInfo | null>(null);
   const [flags, setFlags] = useState<FeatureFlags | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchMerchant();
-  }, []);
-
-  const fetchMerchant = async () => {
+  const fetchMerchant = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -57,7 +56,22 @@ export function useMerchant() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchMerchant();
+
+    // Listen for merchant updates from other components
+    const handleMerchantUpdate = () => {
+      fetchMerchant();
+    };
+
+    window.addEventListener(MERCHANT_UPDATE_EVENT, handleMerchantUpdate);
+
+    return () => {
+      window.removeEventListener(MERCHANT_UPDATE_EVENT, handleMerchantUpdate);
+    };
+  }, [fetchMerchant]);
 
   const updateMerchant = async (updates: Partial<MerchantInfo>) => {
     try {
@@ -100,17 +114,31 @@ export function useMerchant() {
         return;
       }
 
-      await supabase
+      // Build update object with only the fields that were provided
+      const updateData: Record<string, boolean> = {};
+      if (updates.pixSettlement !== undefined) updateData.pix_settlement = updates.pixSettlement;
+      if (updates.payWithBinance !== undefined) updateData.pay_with_binance = updates.payWithBinance;
+      if (updates.useProgram !== undefined) updateData.use_program = updates.useProgram;
+      if (updates.demoMode !== undefined) updateData.demo_mode = updates.demoMode;
+
+      const { error } = await supabase
         .from('merchants')
-        .update({
-          pix_settlement: updates.pixSettlement,
-          pay_with_binance: updates.payWithBinance,
-          use_program: updates.useProgram,
-          demo_mode: updates.demoMode,
-        })
+        .update(updateData)
         .eq('id', merchantId);
 
+      if (error) {
+        console.error('Error updating merchant flags:', error);
+        return;
+      }
+
+      // Aguardar um momento para o banco atualizar
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Buscar dados atualizados
       await fetchMerchant();
+
+      // Notify other components about the update
+      window.dispatchEvent(new Event(MERCHANT_UPDATE_EVENT));
     } catch (error) {
       console.error('Error updating flags:', error);
     }

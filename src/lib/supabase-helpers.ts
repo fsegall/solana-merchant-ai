@@ -127,12 +127,22 @@ export const supabaseHelpers = {
       return null;
     }
 
-    // current_merchant retorna um array com um objeto, pegamos o id do primeiro
-    if (!data || !Array.isArray(data) || data.length === 0) {
+    // current_merchant retorna um UUID direto (não é um array)
+    if (!data) {
       return null;
     }
 
-    return data[0]?.id || null;
+    // Se data é uma string UUID, retorna direto
+    if (typeof data === 'string') {
+      return data;
+    }
+
+    // Fallback: se por algum motivo vier como array (Supabase pode variar)
+    if (Array.isArray(data) && data.length > 0) {
+      return typeof data[0] === 'string' ? data[0] : data[0]?.id || null;
+    }
+
+    return null;
   },
 
   /**

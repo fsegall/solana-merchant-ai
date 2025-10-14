@@ -39,9 +39,11 @@ export default function Landing() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <Badge variant="secondary" className="mb-4">
-            {t('landing.demo')}
-          </Badge>
+          {flags?.demoMode && (
+            <Badge variant="secondary" className="mb-4">
+              {t('landing.demo')}
+            </Badge>
+          )}
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             {t('landing.title')}
           </h1>

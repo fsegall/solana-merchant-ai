@@ -15,4 +15,29 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      external: [
+        // Mark Cosmos dependencies as external (not needed for Solana-only app)
+        '@getpara/graz',
+        '@getpara/cosmos-wallet-connectors',
+        // Mark Ethereum dependencies as external (not needed for Solana-only app)
+        'wagmi',
+        '@wagmi/core',
+        'wagmi/connectors',
+        '@getpara/evm-wallet-connectors',
+        '@getpara/wagmi-v2-connector',
+      ],
+    },
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+  },
+  optimizeDeps: {
+    include: [
+      // Force pre-bundle to fix ESM issues
+      'qrcode',
+      'bs58',
+    ],
+  },
 }));
