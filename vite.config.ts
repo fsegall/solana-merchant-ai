@@ -13,7 +13,15 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Polyfills for Node.js modules (required by Para SDK)
+      crypto: 'crypto-browserify',
+      stream: 'stream-browserify',
+      buffer: 'buffer',
     },
+  },
+  define: {
+    // Define global for browser compatibility
+    global: 'globalThis',
   },
   build: {
     rollupOptions: {
@@ -38,6 +46,13 @@ export default defineConfig(({ mode }) => ({
       // Force pre-bundle to fix ESM issues
       'qrcode',
       'bs58',
+      'buffer',
     ],
+    esbuildOptions: {
+      // Node.js global to browser globalThis
+      define: {
+        global: 'globalThis',
+      },
+    },
   },
 }));
