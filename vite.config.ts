@@ -17,11 +17,15 @@ export default defineConfig(({ mode }) => ({
       crypto: 'crypto-browserify',
       stream: 'stream-browserify',
       buffer: 'buffer',
+      'process/': path.resolve(__dirname, 'node_modules/process/browser.js'),
     },
   },
   define: {
-    // Define global for browser compatibility
+    // Define globals for browser compatibility
     global: 'globalThis',
+    'process.env': {},
+    'process.browser': true,
+    'process.version': '"v18.0.0"',
   },
   build: {
     rollupOptions: {
@@ -47,11 +51,14 @@ export default defineConfig(({ mode }) => ({
       'qrcode',
       'bs58',
       'buffer',
+      'process',
     ],
     esbuildOptions: {
-      // Node.js global to browser globalThis
+      // Node.js globals to browser compatibility
       define: {
         global: 'globalThis',
+        'process.browser': 'true',
+        'process.version': '"v18.0.0"',
       },
     },
   },
