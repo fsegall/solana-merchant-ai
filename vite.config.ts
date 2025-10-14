@@ -23,9 +23,12 @@ export default defineConfig(({ mode }) => ({
   define: {
     // Define globals for browser compatibility
     global: 'globalThis',
-    'process.env': {},
-    'process.browser': true,
+    'process.env': '{}',
+    'process.browser': 'true',
     'process.version': '"v18.0.0"',
+    // Critical: prevent "exports is not defined" error
+    'typeof exports': '"undefined"',
+    'typeof module': '"undefined"',
   },
   build: {
     rollupOptions: {
@@ -59,6 +62,8 @@ export default defineConfig(({ mode }) => ({
         global: 'globalThis',
         'process.browser': 'true',
         'process.version': '"v18.0.0"',
+        'typeof exports': '"undefined"',
+        'typeof module': '"undefined"',
       },
     },
   },
