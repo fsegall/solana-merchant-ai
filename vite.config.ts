@@ -26,9 +26,6 @@ export default defineConfig(({ mode }) => ({
     'process.env': '{}',
     'process.browser': 'true',
     'process.version': '"v18.0.0"',
-    // Critical: prevent "exports is not defined" error
-    'typeof exports': '"undefined"',
-    'typeof module': '"undefined"',
   },
   build: {
     rollupOptions: {
@@ -46,6 +43,7 @@ export default defineConfig(({ mode }) => ({
     },
     commonjsOptions: {
       transformMixedEsModules: true,
+      ignoreDynamicRequires: true,
     },
   },
   optimizeDeps: {
@@ -62,8 +60,6 @@ export default defineConfig(({ mode }) => ({
         global: 'globalThis',
         'process.browser': 'true',
         'process.version': '"v18.0.0"',
-        'typeof exports': '"undefined"',
-        'typeof module': '"undefined"',
       },
     },
   },
