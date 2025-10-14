@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
+import { PublicKey, Transaction, SystemProgram, TransactionInstruction } from '@solana/web3.js';
 import { createTransferInstruction, getAssociatedTokenAddress } from '@solana/spl-token';
 import BigNumber from 'bignumber.js';
 import { useSolanaPay, PaymentRequest } from '@/hooks/useSolanaPay';
@@ -229,7 +229,7 @@ export function SolanaPayQR({
       // Create transaction
       const transaction = new Transaction();
       
-      // Add transfer instruction with memo (reference)
+      // Add transfer instruction
       transaction.add(
         createTransferInstruction(
           fromAta,
@@ -241,12 +241,13 @@ export function SolanaPayQR({
         )
       );
 
-      // Add reference as a memo
+      // Add reference as a read-only account key
+      // This allows validate-payment to find the transaction via getSignaturesForAddress
       transaction.add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: paymentRequest.reference,
-          lamports: 0, // Just for memo/reference tracking
+        new TransactionInstruction({
+          keys: [{ pubkey: paymentRequest.reference, isSigner: false, isWritable: false }],
+          data: Buffer.alloc(0),
+          programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'), // Memo program
         })
       );
 
