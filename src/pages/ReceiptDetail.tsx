@@ -95,14 +95,14 @@ export default function ReceiptDetail() {
             </div>
 
             {receipt.txHash && (
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">{t('receipts.detail.txHash')}</span>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-sm">{receipt.txHash}</span>
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
+                <span className="text-muted-foreground shrink-0">{t('receipts.detail.txHash')}</span>
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="font-mono text-sm break-all overflow-hidden">{receipt.txHash}</span>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6"
+                    className="h-6 w-6 shrink-0"
                     onClick={() => handleCopy(receipt.txHash!)}
                   >
                     <Copy className="w-3 h-3" />
