@@ -73,24 +73,59 @@ export function SolanaPayQR({
         tokenMint: tokenMint.toString(),
         autoSwap: autoSwapEnabled,
         settlementToken: settlementToken?.symbol,
+        existingReference: existingReference,
       });
 
-      const request = await createPaymentRequest({
-        recipient: recipientPubkey,
-        amount: amountBigNumber,
-        label: label || `Payment of R$ ${amount.toFixed(2)}`,
-        message: message || 'Thank you for your payment',
-        splToken: tokenMint,
-      });
+      // If existingReference is provided (from invoice), use it directly
+      // Otherwise generate a new one via createPaymentRequest
+      let request: PaymentRequest;
+      
+      if (existingReference) {
+        console.log('✅ Using existing reference from invoice:', existingReference);
+        // Create payment request with the existing reference
+        const existingRefPubkey = new PublicKey(existingReference);
+        const url = new URL(`solana:${recipient}`);
+        url.searchParams.set('amount', amountBigNumber.toString());
+        url.searchParams.set('spl-token', tokenMint.toString());
+        url.searchParams.set('reference', existingReference);
+        if (label) url.searchParams.set('label', label);
+        if (message) url.searchParams.set('message', message);
+        
+        // Generate QR code from URL
+        const qr = await import('@solana/pay').then(m => m.createQR(url));
+        const qrBlob = await qr.getRawData('png');
+        if (!qrBlob) throw new Error('Failed to generate QR code');
+        
+        const qrDataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(qrBlob);
+        });
 
-      if (request) {
-        setPaymentRequest(request);
-        setStatus('active');
-        // Use existingReference (invoice ref) for polling instead of generated PublicKey
-        startPolling(existingReference || request.reference.toString());
+        request = {
+          reference: existingRefPubkey,
+          url,
+          qrCode: qrDataUrl,
+        };
       } else {
-        setStatus('error');
+        // Generate new reference
+        console.log('🆕 Generating new reference');
+        const newRequest = await createPaymentRequest({
+          recipient: recipientPubkey,
+          amount: amountBigNumber,
+          label: label || `Payment of R$ ${amount.toFixed(2)}`,
+          message: message || 'Thank you for your payment',
+          splToken: tokenMint,
+        });
+        if (!newRequest) throw new Error('Failed to create payment request');
+        request = newRequest;
       }
+
+      setPaymentRequest(request);
+      setStatus('active');
+      // Use the reference from the request for polling
+      startPolling(request.reference.toString());
     } catch (err) {
       console.error('Failed to generate QR:', err);
       setStatus('error');
