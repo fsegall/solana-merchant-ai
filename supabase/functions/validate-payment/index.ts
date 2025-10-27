@@ -46,11 +46,12 @@ serve(async (req) => {
   const DEMO_MODE = Deno.env.get('DEMO_MODE') === 'true';
 
   try {
-    // Buscar invoice por Solana reference (PublicKey)
+    // Buscar invoice por ref (REFXXXXX), não por Solana reference (PublicKey)
+    // O reference (PublicKey) é usado para buscar a transação no blockchain
     const { data: invoice, error: invoiceError } = await supabase
       .from('invoices')
       .select('*')
-      .eq('reference', reference)
+      .eq('ref', reference)
       .single();
 
     console.log('📋 Invoice query result:', { invoice, error: invoiceError });
