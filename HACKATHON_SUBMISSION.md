@@ -123,6 +123,19 @@ npm run dev
 
 ---
 
+## 🧪 Testing Instructions
+
+For detailed testing instructions, see **[HACKATHON_DEMO_GUIDE.md](HACKATHON_DEMO_GUIDE.md)**.
+
+This guide includes:
+- Step-by-step setup for Phantom wallet
+- How to get test funds (SOL + tBRZ)
+- Complete end-to-end payment flow
+- Settlement testing
+- Troubleshooting tips
+
+---
+
 ## 📝 Video Scripts (To Record)
 
 ### Pitch Video (≤3 min)

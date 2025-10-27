@@ -11,6 +11,11 @@
 
 ---
 
+## 🎯 Quick Links
+
+- 📖 **[Hackathon Demo Guide](HACKATHON_DEMO_GUIDE.md)** - Complete testing guide for judges and testers
+- 🏆 **[Hackathon Submission](HACKATHON_SUBMISSION.md)** - Submission details and checklist
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -41,6 +46,15 @@ npm run dev
 - **Supabase Studio**: http://localhost:54323
 
 ---
+
+## 🔧 Development Scripts
+
+Utilities scripts are organized in `scripts/`:
+
+- **Devnet Setup**: `scripts/devnet/` - Mint tBRZ tokens for testing
+- **Utilities**: `scripts/utils/` - Settlement checks, API testing
+
+See [scripts/README.md](scripts/README.md) for details.
 
 ## 🛠️ Technology Stack
 
