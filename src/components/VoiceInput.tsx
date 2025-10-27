@@ -63,6 +63,28 @@ export function VoiceInput() {
       const token = session.data?.session?.access_token;
       if (!token) throw new Error('no auth token');
 
+      // 1a) Get context from Edge Function
+      console.log('📊 Fetching payment context...');
+      const contextRes = await fetch(`${FUNCTIONS_BASE}/voice-context`, {
+        method: 'GET',
+        headers: { 
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      let contextText = '';
+      if (contextRes.ok) {
+        const contextData = await contextRes.json();
+        const invoices = contextData.context?.recentInvoices || [];
+        if (invoices.length > 0) {
+          const invoiceList = invoices.map((inv: any) => 
+            `- ${inv.ref}: R$ ${inv.amount} (${inv.status})`
+          ).join('\n');
+          contextText = `\n\nContexto de pagamentos:\n${invoiceList}`;
+          console.log('✅ Got payment context:', invoices.length, 'invoices');
+        }
+      }
+
       const r = await fetch(`${FUNCTIONS_BASE}/openai-realtime-token`, {
         method: 'POST',
         headers: { 
@@ -100,12 +122,12 @@ export function VoiceInput() {
         setConnected(true);
         console.log('🔌 WebSocket connected');
         
-        // Send session.update
+        // Send session.update with context
         const sessionUpdate = {
           type: 'session.update',
           session: {
             type: 'realtime',
-            instructions: 'You are a helpful voice assistant for a point-of-sale system. Help users and answer questions concisely. Always wait for the user to finish speaking before responding.',
+            instructions: `You are a helpful voice assistant for a point-of-sale system. Help users and answer questions concisely. Always wait for the user to finish speaking before responding.${contextText}`,
             tools: [],
           }
         };
