@@ -106,12 +106,6 @@ export function VoiceInput() {
           session: {
             type: 'realtime',
             instructions: 'You are a helpful voice assistant for a point-of-sale system. Help users and answer questions concisely. Always wait for the user to finish speaking before responding.',
-            turn_detection: {
-              type: 'server_vad',
-              threshold: 0.5,
-              prefix_padding_ms: 300,
-              silence_duration_ms: 2000 // Increase to 2 seconds to avoid interrupting
-            },
             tools: [],
           }
         };
