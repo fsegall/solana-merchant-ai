@@ -102,8 +102,6 @@ export function VoiceInput() {
           session: {
             modalities: ['text', 'audio'],
             instructions: 'You are a helpful voice assistant for a point-of-sale system. Help users and answer questions concisely.',
-            input_audio_format: 'pcm16',
-            output_audio_format: 'pcm16',
             tools: [],
           }
         };
