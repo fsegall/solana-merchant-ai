@@ -142,10 +142,12 @@ See [scripts/README.md](scripts/README.md) for details.
 - **CSV Export** - Data portability for accounting
 
 ### ✅ Authentication & Multi-Tenancy
-- Login/register with Supabase Auth
+- **Dual Authentication**: Passkey (biometric) + Email/Password
+- **Passkey Support** - WebAuthn with Para (embedded wallets, no seed phrases)
 - Multi-merchant support with RLS (Row-Level Security)
 - Role-based permissions (owner, manager, cashier)
 - Feature flags per merchant
+- **Roadmap**: Web3Auth integration for social login
 
 ### ✅ POS (Point of Sale)
 - Mobile-first responsive interface
@@ -266,21 +268,18 @@ supabase/
 - [x] Functional demo mode
 - [x] Basic PWA
 
-### 🟡 Next Phase - Solana Integration
-- [ ] Solana Web3.js integration
-- [ ] Solana Pay QR codes
-- [ ] On-chain confirmation
-- [ ] BRZ token integration
+### 🟡 Next Phase - Advanced Features
+- [ ] Jupiter auto-swap integration (multi-token acceptance)
+- [ ] Web3Auth for social login (Google/Apple)
+- [ ] Smart contract integration (Anchor)
+- [ ] Mobile app (PWA → native)
 
 ### 🔵 Future Phase - Advanced Features
-- [ ] Smart contracts
-- [ ] **Real PIX settlement** (Transfero Adapter)
-  - [ ] PSP Transfero integration
-  - [ ] Payment webhooks
-  - [ ] Official PDF receipts
-- [ ] Advanced reports
-- [ ] Android APK
-- [ ] Printer integration
+- [ ] Advanced reporting & analytics
+- [ ] Thermal printer integration
+- [ ] Android APK & iOS app
+- [ ] Multi-language support (EN/ES/FR/DE)
+- [ ] Loyalty program (NFT receipts)
 
 ---
 
