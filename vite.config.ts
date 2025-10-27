@@ -6,26 +6,20 @@ import { componentTagger } from "lovable-tagger";
 // Plugin para remover exports problemáticos do bundle final
 const removeExportsPlugin = () => ({
   name: 'remove-exports',
-  enforce: 'post',
   generateBundle(options, bundle) {
     Object.keys(bundle).forEach(fileName => {
       const chunk = bundle[fileName];
       if (chunk.type === 'chunk' && chunk.code) {
-        // Remover declarações problemáticas de exports
+        // Remover todas as declarações problemáticas de exports
         chunk.code = chunk.code
           .replace(/var exports;/g, '')
-          .replace(/exports = /g, '')
+          .replace(/exports\s*=/g, 'void(0)')
           .replace(/typeof exports !== "undefined"/g, 'false')
-          .replace(/typeof exports === "undefined"/g, 'true');
+          .replace(/typeof exports === "undefined"/g, 'true')
+          .replace(/exports\./g, 'undefined.')
+          .replace(/if\s*\(\s*exports\s*\)/g, 'if(false)');
       }
     });
-  },
-  renderChunk(code, chunk) {
-    // Remover exports durante a renderização
-    return code
-      .replace(/var exports;/g, '')
-      .replace(/typeof exports !== "undefined"/g, 'false')
-      .replace(/typeof exports === "undefined"/g, 'true');
   },
 });
 
@@ -71,6 +65,8 @@ export default defineConfig(({ mode }) => ({
       ],
       output: {
         format: 'es',
+        // Banner para definir exports no início do arquivo
+        banner: 'var exports = {}; var module = { exports: exports };',
         manualChunks: {
           'vendor-solana': ['@solana/web3.js', '@solana/wallet-adapter-base', '@solana/wallet-adapter-react'],
           'vendor-supabase': ['@supabase/supabase-js'],
@@ -79,7 +75,6 @@ export default defineConfig(({ mode }) => ({
     },
     commonjsOptions: {
       transformMixedEsModules: true,
-      dynamicRequireTargets: [],
     },
     target: 'esnext',
   },
