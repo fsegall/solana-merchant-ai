@@ -10,6 +10,10 @@ const removeExportsPlugin = () => ({
     Object.keys(bundle).forEach(fileName => {
       const chunk = bundle[fileName];
       if (chunk.type === 'chunk' && chunk.code) {
+        // Adicionar polyfill de exports no início se não existir
+        if (!chunk.code.includes('var exports') && chunk.code.includes('exports')) {
+          chunk.code = 'var exports = {}; var module = { exports: exports };' + chunk.code;
+        }
         // Remover todas as declarações problemáticas de exports
         chunk.code = chunk.code
           .replace(/var exports;/g, '')
@@ -49,6 +53,9 @@ export default defineConfig(({ mode }) => ({
     'process.env': '{}',
     'process.browser': 'true',
     'process.version': '"v18.0.0"',
+    // Polyfill para exports
+    'exports': '{}',
+    'module.exports': '{}',
   },
   build: {
     rollupOptions: {
@@ -65,8 +72,6 @@ export default defineConfig(({ mode }) => ({
       ],
       output: {
         format: 'es',
-        // Banner para definir exports no início do arquivo
-        banner: 'var exports = {}; var module = { exports: exports };',
         manualChunks: {
           'vendor-solana': ['@solana/web3.js', '@solana/wallet-adapter-base', '@solana/wallet-adapter-react'],
           'vendor-supabase': ['@supabase/supabase-js'],
