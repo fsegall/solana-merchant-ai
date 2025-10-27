@@ -83,9 +83,11 @@ See [scripts/README.md](scripts/README.md) for details.
 ### Crypto & Payments
 
 * **Solana Web3.js** + **Wallet Adapter** (Phantom, Solflare, etc)
-* **Solana Pay** (deep link/QR + `reference`)
-* **Jupiter Exchange** - Multi-token support (100+ SPL tokens)
-* **Multi-Stablecoin** - BRZ, USDC, EURC
+* **Helius** - Enhanced RPC provider for reliable transaction indexing
+* **Solana Pay** - Industry-standard payment protocol (deep link/QR + `reference`)
+* **Jupiter Exchange** - Multi-token support (100+ SPL tokens, auto-swap)
+* **Solana DEX Integration** - Orca, Raydium, Phoenix for best liquidity
+* **Multi-Stablecoin** - BRZ, USDC, EURC supported
 
 ### AI & Automation
 
@@ -116,12 +118,13 @@ See [scripts/README.md](scripts/README.md) for details.
 - **Zero Slippage Risk** - Automatic conversion ensures merchant always receives stable value
 - **Token Selector UI** - Beautiful interface to configure accepted tokens
 
-### ⚡ On-Chain Payments (Solana Pay)
-- **Instant Confirmation** - <10 second on-chain finality
+### ⚡ On-Chain Payments (Solana Ecosystem)
+- **Instant Confirmation** - <10 second on-chain finality via Solana network
+- **Helius RPC** - Enhanced transaction indexing and reliability
 - **QR Code Generation** - Solana Pay protocol compatible
-- **Direct Wallet Payment** - One-click payment for desktop users
-- **Real-time Validation** - Automatic payment detection and confirmation
-- **Transaction Tracking** - Full on-chain verification
+- **Direct Wallet Payment** - One-click payment for desktop users (Phantom, Solflare, Backpack)
+- **Real-time Validation** - Automatic payment detection via Helius/Web3.js
+- **Transaction Tracking** - Full on-chain verification with Solana blockchain
 
 ### 🏦 Global Settlement (Wise + Circle)
 - **Circle Integration** - Primary provider for USDC → USD/EUR/GBP bank transfers
@@ -187,10 +190,14 @@ Create a `.env.local` file:
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# Solana (future)
-VITE_SOLANA_CLUSTER=devnet
+# Solana Configuration
+VITE_SOLANA_CLUSTER=devnet  # or mainnet-beta
 VITE_BRZ_MINT=your_brz_mint_address
 VITE_MERCHANT_WALLET=your_merchant_wallet
+
+# Helius (Enhanced Solana RPC) - Optional but recommended
+# Get free API key at https://dev.helius.xyz
+HELIUS_API_KEY=your_helius_api_key
 
 # PIX Settlement (Transfero - future)
 ENABLE_PIX_SETTLEMENT=false

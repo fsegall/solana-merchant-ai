@@ -8,7 +8,9 @@
 
 **Solana Merchant AI** is a crypto-native Point-of-Sale (POS) system that combines:
 - 💰 **Solana Pay** for instant on-chain payments
+- 🌐 **Helius RPC** for enhanced transaction indexing and reliability
 - 🪐 **Jupiter Aggregator** for multi-token acceptance (100+ SPL tokens)
+- 🦐 **Orca, Raydium, Phoenix** - Best liquidity via Jupiter
 - 🏦 **Circle & Wise** for global fiat settlement (USD/EUR/50+ currencies)
 - 🎤 **AI Voice Interface** powered by OpenAI Realtime
 - 📊 **Real-time validation** with <10 second finality
