@@ -64,23 +64,36 @@ serve(async (req) => {
       console.log('🎭 DEMO MODE: Simulating successful Circle transfer for USD');
       const demoPayoutId = `demo-circle-${crypto.randomUUID()}`;
       
-      // Mark payment as settled in database
-      const { error: updateError } = await supabase
-        .from('payments')
-        .update({
-          settlement_provider: 'circle',
-          settlement_id: demoPayoutId,
-          settlement_currency: currency,
-          settlement_amount: amount,
-          settlement_fee: 0.00,
-          settlement_requested_at: new Date().toISOString(),
-        })
-        .eq('invoice_id', invoice.id);
+        // Record settlement in database
+        const { data: payment } = await supabase
+          .from('payments')
+          .select('id')
+          .eq('invoice_id', invoice.id)
+          .single();
 
-      if (updateError) {
-        console.error('❌ Error updating payment:', updateError);
-        return json({ error: 'Failed to update settlement', details: updateError }, 500);
-      }
+        if (!payment) {
+          console.error('❌ Payment not found for invoice');
+          return json({ error: 'Payment not found' }, 500);
+        }
+
+        const { error: insertError } = await supabase
+          .from('settlements')
+          .insert({
+            payment_id: payment.id,
+            provider: 'circle',
+            provider_tx_id: demoPayoutId,
+            currency: currency,
+            amount: amount,
+            fee: 0.00,
+            status: 'completed',
+            metadata: { demo: true },
+            completed_at: new Date().toISOString(),
+          });
+
+        if (insertError) {
+          console.error('❌ Error recording settlement:', insertError);
+          return json({ error: 'Failed to record settlement', details: insertError }, 500);
+        }
 
       console.log('✅ DEMO: Settlement recorded successfully');
 
@@ -133,21 +146,34 @@ serve(async (req) => {
         console.log('⚠️ Circle API failed, falling back to DEMO_MODE...');
         const demoPayoutId = `demo-circle-fallback-${crypto.randomUUID()}`;
         
-        const { error: updateError } = await supabase
+        const { data: payment } = await supabase
           .from('payments')
-          .update({
-            settlement_provider: 'circle',
-            settlement_id: demoPayoutId,
-            settlement_currency: currency,
-            settlement_amount: amount,
-            settlement_fee: 0.00,
-            settlement_requested_at: new Date().toISOString(),
-          })
-          .eq('invoice_id', invoice.id);
+          .select('id')
+          .eq('invoice_id', invoice.id)
+          .single();
 
-        if (updateError) {
-          console.error('❌ Error updating payment:', updateError);
-          return json({ error: 'Failed to update settlement', details: updateError }, 500);
+        if (!payment) {
+          console.error('❌ Payment not found for invoice');
+          return json({ error: 'Payment not found' }, 500);
+        }
+
+        const { error: insertError } = await supabase
+          .from('settlements')
+          .insert({
+            payment_id: payment.id,
+            provider: 'circle',
+            provider_tx_id: demoPayoutId,
+            currency: currency,
+            amount: amount,
+            fee: 0.00,
+            status: 'completed',
+            metadata: { demo: true, apiError: error.message || payoutResponse.statusText },
+            completed_at: new Date().toISOString(),
+          });
+
+        if (insertError) {
+          console.error('❌ Error recording settlement:', insertError);
+          return json({ error: 'Failed to record settlement', details: insertError }, 500);
         }
 
         return json({

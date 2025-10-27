@@ -41,11 +41,12 @@ serve(async (req) => {
       return json({ error: 'Missing required fields: invoiceRef, amount, currency, recipientId' }, 400);
     }
 
-    if (!WISE_API_TOKEN || !WISE_PROFILE_ID) {
+    // Skip credential check in DEMO_MODE
+    if (!DEMO_MODE && (!WISE_API_TOKEN || !WISE_PROFILE_ID)) {
       return json({ error: 'Wise API credentials not configured' }, 500);
     }
 
-    if (!WISE_RECIPIENT_ID) {
+    if (!DEMO_MODE && !WISE_RECIPIENT_ID) {
       return json({ error: 'Wise recipient ID not configured - create a recipient first' }, 500);
     }
 
@@ -78,22 +79,35 @@ serve(async (req) => {
       console.log('🎭 DEMO MODE: Simulating successful Wise transfer for BRL');
       const demoTransferId = `demo-wise-${crypto.randomUUID()}`;
       
-      // Mark payment as settled in database
-      const { error: updateError } = await supabase
+      // Record settlement in database
+      const { data: payment } = await supabase
         .from('payments')
-        .update({
-          settlement_provider: 'wise',
-          settlement_id: demoTransferId,
-          settlement_currency: currency,
-          settlement_amount: amount,
-          settlement_fee: 0.01,
-          settlement_requested_at: new Date().toISOString(),
-        })
-        .eq('invoice_id', invoice.id);
+        .select('id')
+        .eq('invoice_id', invoice.id)
+        .single();
 
-      if (updateError) {
-        console.error('❌ Error updating payment:', updateError);
-        return json({ error: 'Failed to update settlement', details: updateError }, 500);
+      if (!payment) {
+        console.error('❌ Payment not found for invoice');
+        return json({ error: 'Payment not found' }, 500);
+      }
+
+      const { error: insertError } = await supabase
+        .from('settlements')
+        .insert({
+          payment_id: payment.id,
+          provider: 'wise',
+          provider_tx_id: demoTransferId,
+          currency: currency,
+          amount: amount,
+          fee: 0.01,
+          status: 'completed',
+          metadata: { demo: true },
+          completed_at: new Date().toISOString(),
+        });
+
+      if (insertError) {
+        console.error('❌ Error recording settlement:', insertError);
+        return json({ error: 'Failed to record settlement', details: insertError }, 500);
       }
 
       console.log('✅ DEMO: Settlement recorded successfully');
