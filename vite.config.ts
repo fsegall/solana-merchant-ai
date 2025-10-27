@@ -40,10 +40,17 @@ export default defineConfig(({ mode }) => ({
         '@getpara/evm-wallet-connectors',
         '@getpara/wagmi-v2-connector',
       ],
+      output: {
+        // Fix for "exports is not defined" error
+        inlineDynamicImports: false,
+        format: 'es',
+      },
     },
     commonjsOptions: {
       transformMixedEsModules: true,
       ignoreDynamicRequires: true,
+      // Fix CommonJS modules in browser
+      esmExternals: true,
     },
   },
   optimizeDeps: {
