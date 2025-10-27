@@ -7,6 +7,7 @@ import { json } from "../_shared/responses.ts";
 
 const CIRCLE_API_KEY = Deno.env.get('CIRCLE_API_KEY');
 const CIRCLE_BASE_URL = Deno.env.get('CIRCLE_BASE_URL') || 'https://api-sandbox.circle.com';
+const DEMO_MODE = Deno.env.get('DEMO_MODE') === 'true';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -56,8 +57,46 @@ serve(async (req) => {
     }
 
     console.log('💰 Creating Circle payout:', { invoiceRef, amount, currency });
+    console.log('🎭 DEMO_MODE:', DEMO_MODE);
 
-    // Create payout on Circle
+    // DEMO MODE: Skip API calls and simulate success for USD
+    if (DEMO_MODE && currency === 'USD') {
+      console.log('🎭 DEMO MODE: Simulating successful Circle transfer for USD');
+      const demoPayoutId = `demo-circle-${crypto.randomUUID()}`;
+      
+      // Mark payment as settled in database
+      const { error: updateError } = await supabase
+        .from('payments')
+        .update({
+          settlement_provider: 'circle',
+          settlement_id: demoPayoutId,
+          settlement_currency: currency,
+          settlement_amount: amount,
+          settlement_fee: 0.00,
+          settlement_requested_at: new Date().toISOString(),
+        })
+        .eq('invoice_id', invoice.id);
+
+      if (updateError) {
+        console.error('❌ Error updating payment:', updateError);
+        return json({ error: 'Failed to update settlement', details: updateError }, 500);
+      }
+
+      console.log('✅ DEMO: Settlement recorded successfully');
+
+      return json({
+        success: true,
+        payoutId: demoPayoutId,
+        amount: amount,
+        currency: currency,
+        fee: 0.00,
+        demo: true,
+        message: 'Demo mode: Transfer simulated successfully'
+      });
+    }
+
+    // Try real Circle API (for non-USD or non-demo)
+    console.log('📊 Attempting real Circle API call...');
     const payoutResponse = await fetch(`${CIRCLE_BASE_URL}/v1/businessAccount/payouts`, {
       method: 'POST',
       headers: {
@@ -88,6 +127,41 @@ serve(async (req) => {
     if (!payoutResponse.ok) {
       const error = await payoutResponse.json();
       console.error('❌ Circle API error:', error);
+      
+      // Fallback to DEMO_MODE if API fails
+      if (DEMO_MODE) {
+        console.log('⚠️ Circle API failed, falling back to DEMO_MODE...');
+        const demoPayoutId = `demo-circle-fallback-${crypto.randomUUID()}`;
+        
+        const { error: updateError } = await supabase
+          .from('payments')
+          .update({
+            settlement_provider: 'circle',
+            settlement_id: demoPayoutId,
+            settlement_currency: currency,
+            settlement_amount: amount,
+            settlement_fee: 0.00,
+            settlement_requested_at: new Date().toISOString(),
+          })
+          .eq('invoice_id', invoice.id);
+
+        if (updateError) {
+          console.error('❌ Error updating payment:', updateError);
+          return json({ error: 'Failed to update settlement', details: updateError }, 500);
+        }
+
+        return json({
+          success: true,
+          payoutId: demoPayoutId,
+          amount: amount,
+          currency: currency,
+          fee: 0.00,
+          demo: true,
+          apiError: error.message || payoutResponse.statusText,
+          message: 'Demo mode: Transfer simulated due to API failure'
+        });
+      }
+      
       return json({ 
         error: 'Circle payout failed', 
         details: error.message || payoutResponse.statusText 
