@@ -71,6 +71,7 @@ serve(async (req) => {
     }
 
     console.log('💱 Creating Wise payout:', { invoiceRef, amount, currency, recipientId });
+    console.log('🎭 DEMO_MODE:', DEMO_MODE, typeof DEMO_MODE);
 
     // Step 1: Create quote
     console.log('📊 Step 1: Creating quote...');
