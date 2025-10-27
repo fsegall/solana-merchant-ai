@@ -143,11 +143,13 @@ See [scripts/README.md](scripts/README.md) for details.
 
 ### ✅ Authentication & Multi-Tenancy
 - **Dual Authentication**: Passkey (biometric) + Email/Password
-- **Passkey Support** - WebAuthn with Para (embedded wallets, no seed phrases)
 - Multi-merchant support with RLS (Row-Level Security)
 - Role-based permissions (owner, manager, cashier)
 - Feature flags per merchant
-- **Roadmap**: Web3Auth integration for social login
+- **Passkey Integration** (Partially implemented - Post-hackathon)
+  - UI components ready (PasskeyOnboarding.tsx)
+  - Needs Web3Auth or Para Provider integration
+  - **Roadmap**: Social login (Google/Apple) with embedded wallets
 
 ### ✅ POS (Point of Sale)
 - Mobile-first responsive interface
@@ -270,12 +272,13 @@ supabase/
 
 ### 🟡 Next Phase - Advanced Features
 - [ ] Jupiter auto-swap integration (multi-token acceptance)
-- [ ] Web3Auth for social login (Google/Apple)
+- [ ] Complete Passkey authentication (Web3Auth/Para integration)
 - [ ] Smart contract integration (Anchor)
 - [ ] Mobile app (PWA → native)
 
 ### 🔵 Future Phase - Advanced Features
 - [ ] Advanced reporting & analytics
+- [ ] Complete Passkey integration with social login
 - [ ] Thermal printer integration
 - [ ] Android APK & iOS app
 - [ ] Multi-language support (EN/ES/FR/DE)
