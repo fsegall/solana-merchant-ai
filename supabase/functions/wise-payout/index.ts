@@ -110,6 +110,12 @@ serve(async (req) => {
         return json({ error: 'Failed to record settlement', details: insertError }, 500);
       }
 
+      // Update invoice status to 'settled'
+      const { error: markError } = await supabase.rpc('mark_settled', { _ref: invoiceRef });
+      if (markError) {
+        console.error('⚠️ Warning: Could not mark invoice as settled:', markError);
+      }
+
       console.log('✅ DEMO: Settlement recorded successfully');
 
       return json({
