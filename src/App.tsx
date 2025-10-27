@@ -46,7 +46,7 @@ const App = () => (
               <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            {/* AI Chat Assistant - disponível em todas as páginas após login */}
+            {/* AI Chat Assistant - using Gemini API directly */}
             <ChatAssistant />
           </BrowserRouter>
         </TooltipProvider>
