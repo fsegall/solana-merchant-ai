@@ -153,7 +153,7 @@ export function VoiceInput() {
       ws.addEventListener('message', (event) => {
         try {
           const msg = JSON.parse(event.data);
-          console.log('📨 Message:', msg.type);
+          console.log('📨 Message:', msg.type, msg);
           
           if (msg.type === 'error') {
             console.error('❌ OpenAI error:', msg.error);
@@ -167,16 +167,31 @@ export function VoiceInput() {
           } else if (msg.type === 'response.created') {
             setIsProcessing(true);
             setAiResponse('');
+            console.log('✨ Response created');
+          } else if (msg.type === 'conversation.item.added') {
+            // Check if it's assistant message
+            if (msg.item?.role === 'assistant') {
+              console.log('🤖 Assistant response started');
+            }
           } else if (msg.type === 'response.content_part.added') {
-            // Accumulate text response from AI
-            if (msg.content_part?.type === 'text' && msg.content_part.text) {
-              setAiResponse(prev => prev + msg.content_part.text);
+            // Show the full message for debugging
+            console.log('📝 Content part added:', msg.content_part);
+            
+            // Try to get text from different formats
+            const text = msg.content_part?.text || msg.content_part?.transcript || msg.content_part?.delta;
+            if (text) {
+              setAiResponse(prev => prev + text);
+              console.log('✅ Text received:', text);
             }
           } else if (msg.type === 'response.done') {
             setIsProcessing(false);
+            console.log('✅ Response done');
           } else if (msg.type === 'response.output_audio_transcript.delta') {
-            // This is the AI's speech transcript - show in UI
-            console.log('🎙️ AI speaking:', msg.delta);
+            // This is the AI's speech transcript - accumulate it
+            if (msg.delta) {
+              setAiResponse(prev => prev + msg.delta);
+              console.log('🎙️ AI transcript:', msg.delta);
+            }
           }
         } catch (e) {
           console.error('Error parsing message:', e);
