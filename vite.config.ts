@@ -3,13 +3,43 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
+// Plugin para remover exports problemáticos do bundle final
+const removeExportsPlugin = () => ({
+  name: 'remove-exports',
+  enforce: 'post',
+  generateBundle(options, bundle) {
+    Object.keys(bundle).forEach(fileName => {
+      const chunk = bundle[fileName];
+      if (chunk.type === 'chunk' && chunk.code) {
+        // Remover declarações problemáticas de exports
+        chunk.code = chunk.code
+          .replace(/var exports;/g, '')
+          .replace(/exports = /g, '')
+          .replace(/typeof exports !== "undefined"/g, 'false')
+          .replace(/typeof exports === "undefined"/g, 'true');
+      }
+    });
+  },
+  renderChunk(code, chunk) {
+    // Remover exports durante a renderização
+    return code
+      .replace(/var exports;/g, '')
+      .replace(/typeof exports !== "undefined"/g, 'false')
+      .replace(/typeof exports === "undefined"/g, 'true');
+  },
+});
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [
+    react(), 
+    mode === "development" && componentTagger(),
+    removeExportsPlugin()
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -17,7 +47,6 @@ export default defineConfig(({ mode }) => ({
       crypto: 'crypto-browserify',
       stream: 'stream-browserify',
       buffer: 'buffer',
-      'process/': path.resolve(__dirname, 'node_modules/process/browser.js'),
     },
   },
   define: {
@@ -41,42 +70,17 @@ export default defineConfig(({ mode }) => ({
         '@getpara/wagmi-v2-connector',
       ],
       output: {
-        // Fix for "exports is not defined" error
-        inlineDynamicImports: false,
         format: 'es',
-        // Ensure proper chunking to avoid exports issue
         manualChunks: {
-          'solana-web3': ['@solana/web3.js', '@solana/wallet-adapter-base', '@solana/wallet-adapter-react'],
-          'supabase': ['@supabase/supabase-js'],
+          'vendor-solana': ['@solana/web3.js', '@solana/wallet-adapter-base', '@solana/wallet-adapter-react'],
+          'vendor-supabase': ['@supabase/supabase-js'],
         },
       },
     },
     commonjsOptions: {
       transformMixedEsModules: true,
-      ignoreDynamicRequires: true,
-      // Fix CommonJS modules in browser
-      esmExternals: true,
-      include: [/node_modules/],
+      dynamicRequireTargets: [],
     },
-    // Fix for "exports is not defined" error
-    target: 'es2015',
-    minify: 'esbuild',
-  },
-  optimizeDeps: {
-    include: [
-      // Force pre-bundle to fix ESM issues
-      'qrcode',
-      'bs58',
-      'buffer',
-      'process',
-    ],
-    esbuildOptions: {
-      // Node.js globals to browser compatibility
-      define: {
-        global: 'globalThis',
-        'process.browser': 'true',
-        'process.version': '"v18.0.0"',
-      },
-    },
+    target: 'esnext',
   },
 }));

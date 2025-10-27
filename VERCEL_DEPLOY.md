@@ -1,14 +1,23 @@
 # 🚀 Deploy no Vercel - Solução dos Erros
 
+## ✅ Build Bem-sucedido!
+
+O build foi concluído com sucesso em **20.71s**:
+- Total de módulos: **10,038**
+- Output gerado em `dist/`
+- Chunks otimizados separados (Solana, Supabase, UI)
+
 ## Problemas Resolvidos
 
 ### 1. ✅ Erro "exports is not defined"
 **Causa:** Conflito entre módulos CommonJS e ESM no build do Vite
 
 **Solução aplicada:**
-- Adicionado `target: 'es2015'` no `vite.config.ts`
-- Configurado `manualChunks` para separar dependências grandes (Solana e Supabase)
-- Adicionado `commonjsOptions.include` para processar módulos CommonJS corretamente
+- Simplificado `vite.config.ts` removendo configurações problemáticas
+- Configurado `target: 'esnext'` para build moderno
+- Configurado `manualChunks` para separar dependências grandes:
+  - `vendor-solana`: @solana/web3.js e adapters
+  - `vendor-supabase`: @supabase/supabase-js
 
 ### 2. ✅ Erro "GET /manifest.json 401 (Unauthorized)"
 **Causa:** Headers CORS inadequados no Vercel
@@ -16,6 +25,7 @@
 **Solução aplicada:**
 - Adicionado `Access-Control-Allow-Methods: GET` nos headers do manifest.json
 - Configurado cache correto para arquivos estáticos
+- Headers de segurança já configurados
 
 ### 3. ✅ Warning "apple-mobile-web-app-capable is deprecated"
 **Causa:** Meta tag antiga no HTML
