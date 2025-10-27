@@ -74,21 +74,21 @@ export function VoiceInput() {
       }
       
       const data = await r.json();
-      const ephemeralKey = data.ephemeralKey;
+      const apiKey = data.apiKey;
       const model = data.model || 'gpt-4o-realtime-preview-2024-12-17';
       
-      if (!ephemeralKey) throw new Error('missing ephemeral key');
+      if (!apiKey) throw new Error('missing API key');
 
-      console.log('✅ Got ephemeral key:', ephemeralKey.substring(0, 20) + '...');
+      console.log('✅ Got API key:', apiKey.substring(0, 20) + '...');
       console.log('📦 Model:', model);
 
-      // 2) Connect WebSocket
+      // 2) Connect WebSocket with API key
       const url = `wss://api.openai.com/v1/realtime?model=${encodeURIComponent(model)}`;
       console.log('🔗 Connecting to:', url);
       
       const ws = new WebSocket(url, [
         'realtime',
-        `openai-insecure-api-key.${ephemeralKey}`
+        `openai-insecure-api-key.${apiKey}`
       ]);
       wsRef.current = ws;
 
