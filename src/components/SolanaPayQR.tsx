@@ -136,7 +136,7 @@ export function SolanaPayQR({
     }
   };
 
-  const startPolling = (reference: string) => {
+  const startPolling = (ref: string) => {
     // Clear existing interval
     if (pollInterval) {
       clearInterval(pollInterval);
@@ -144,7 +144,7 @@ export function SolanaPayQR({
 
     // Poll every 3 seconds
     const interval = setInterval(async () => {
-      const result = await validatePayment(reference);
+      const result = await validatePayment(ref);
       
       if (result && result.status === 'confirmed' && result.tx) {
         setStatus('paid');
@@ -312,14 +312,18 @@ export function SolanaPayQR({
       );
       console.log('✅ Transfer instruction added');
 
-      // Add reference as a memo instruction (read-only account key)
-      // This allows validate-payment to find the transaction via getSignaturesForAddress
-      console.log('📝 Adding memo instruction with reference:', paymentRequest.reference.toString());
+      // Add memo instruction for the reference
+      // Simple memo: just text data, no account keys needed
+      const memoProgram = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
+      const memoText = `ref:${paymentRequest.reference.toString()}`;
+      
+      console.log('📝 Adding memo instruction with reference:', memoText);
+      
       transaction.add(
         new TransactionInstruction({
-          keys: [{ pubkey: paymentRequest.reference, isSigner: false, isWritable: false }],
-          data: Buffer.alloc(0),
-          programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'), // Memo program
+          keys: [], // Memo program doesn't need any account keys
+          data: Buffer.from(memoText, 'utf8'),
+          programId: memoProgram,
         })
       );
       console.log('✅ Memo instruction added');
