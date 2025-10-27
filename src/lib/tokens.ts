@@ -15,7 +15,7 @@ export const DEVNET_TOKENS: TokenInfo[] = [
   {
     symbol: 'tBRZ',
     name: 'BRZ Stablecoin (Testnet)',
-    mint: '6PzmkfqSn8uoN8adp4uk6nsL8VbdRrJocpB8LxEH4pA4',
+    mint: 'CNgjfkVEKKkDspYS5ZZem8KpyhubmGi7MHXFuc55QtZV',
     decimals: 6,
   },
   {
