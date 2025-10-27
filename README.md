@@ -109,11 +109,12 @@ See [scripts/README.md](scripts/README.md) for details.
 - **Automated Insights** - Real-time analytics and recommendations
 - **Context-Aware** - Understands merchant data and history
 
-### 🪐 Multi-Token Acceptance (Jupiter)
-- **100+ SPL Tokens** - Accept SOL, USDC, BONK, JUP, PYTH, JTO, WIF, and more
-- **Token Selector UI** - Beautiful interface to choose accepted tokens
-- **Settlement Tokens** - Receive in BRZ (Brazil), USDC (USA), or EURC (Europe)
-- **Flexible Architecture** - Merchant chooses: keep crypto, swap to stable, or settle to fiat
+### 🪐 Multi-Token Acceptance (Jupiter Aggregator)
+- **100+ SPL Tokens** - Customers pay with ANY Solana token (SOL, USDC, BONK, JUP, PYTH, WIF, etc)
+- **Auto-Swap to Stablecoins** - Jupiter instantly converts any payment to USDC/BRZ/EURC
+- **Best Price Execution** - Aggregates liquidity across all Solana DEXes (Orca, Raydium, Phoenix)
+- **Zero Slippage Risk** - Automatic conversion ensures merchant always receives stable value
+- **Token Selector UI** - Beautiful interface to configure accepted tokens
 
 ### ⚡ On-Chain Payments (Solana Pay)
 - **Instant Confirmation** - <10 second on-chain finality
@@ -122,12 +123,17 @@ See [scripts/README.md](scripts/README.md) for details.
 - **Real-time Validation** - Automatic payment detection and confirmation
 - **Transaction Tracking** - Full on-chain verification
 
-### 🏦 Global Settlement
-- **Wise Integration** - 50+ currencies, BRL-focused
-- **Circle Integration** - USDC/EUR/GBP global settlement
-- **DEMO Mode** - Test settlement flow without real money
-- **Optional Off-Ramp** - Merchant chooses when to convert to fiat
-- **Multi-Currency** - Support for BRZ, USD, EUR markets
+### 🏦 Global Settlement (Wise + Circle)
+- **Circle Integration** - Primary provider for USDC → USD/EUR/GBP bank transfers
+  - Crypto-native (Circle is USDC issuer)
+  - 150+ countries supported
+  - Enterprise-grade compliance
+- **Wise Integration** - Multi-currency settlement for 50+ currencies
+  - Perfect for international merchants
+  - Low fees (0.5-1%)
+  - Fast wire transfers
+- **Optional Off-Ramp** - Merchants choose: keep crypto OR settle to fiat
+- **DEMO Mode** - Test entire settlement flow without real funds
 
 ### 📊 Analytics & Dashboard
 - **Real-Time Metrics** - Total volume, transaction count, average ticket

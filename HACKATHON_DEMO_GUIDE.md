@@ -1,19 +1,20 @@
-# 🏆 Hackathon Demo Guide - Merchant AI Checkout
+# 🏆 Hackathon Demo Guide - Solana Merchant AI
 
-> **Complete guide for judges, testers, and hackathon reviewers to test the Solana Pay POS system**
+> **Complete guide for judges, testers, and hackathon reviewers**
 
 ---
 
 ## 🎯 What is this project?
 
-**Merchant AI Checkout** is a crypto-native Point-of-Sale (POS) system that combines:
-- 💰 **Solana Pay** for instant crypto payments
-- 🪙 **BRZ stablecoin** (Brazilian Real on-chain)
-- 🎤 **Voice interface** powered by OpenAI Realtime
-- 📊 **Real-time receipts** with on-chain validation
-- 🔐 **Multi-tenant** with Row-Level Security (RLS)
+**Solana Merchant AI** is a crypto-native Point-of-Sale (POS) system that combines:
+- 💰 **Solana Pay** for instant on-chain payments
+- 🪐 **Jupiter Aggregator** for multi-token acceptance (100+ SPL tokens)
+- 🏦 **Circle & Wise** for global fiat settlement (USD/EUR/50+ currencies)
+- 🎤 **AI Voice Interface** powered by OpenAI Realtime
+- 📊 **Real-time validation** with <10 second finality
+- 🔐 **Enterprise-grade** with Supabase RLS
 
-**Perfect for:** Merchants who want to accept crypto payments as easily as PIX (Brazil) or credit cards.
+**Perfect for:** Merchants globally who want to accept crypto payments and optionally settle to their bank account.
 
 ---
 
