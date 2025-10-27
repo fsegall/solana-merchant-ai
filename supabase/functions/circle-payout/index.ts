@@ -1,8 +1,8 @@
 // Circle Payout Edge Function
 // Handles USDC off-ramp to USD bank transfers via Circle API
 
-import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
-import { userClient } from "../_shared/supabase.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 import { json } from "../_shared/responses.ts";
 
 const CIRCLE_API_KEY = Deno.env.get('CIRCLE_API_KEY');
@@ -36,7 +36,11 @@ serve(async (req) => {
     }
 
     // Get user's merchant context
-    const supabase = userClient(req);
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') || Deno.env.get('SUPABASE_LOCAL_URL') || '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SUPABASE_LOCAL_SERVICE_ROLE_KEY') || '',
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
     const { data: invoice } = await supabase
       .from('invoices')
       .select('id, ref, status, amount_brl')
