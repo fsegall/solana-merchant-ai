@@ -71,9 +71,45 @@ serve(async (req) => {
     }
 
     console.log('💱 Creating Wise payout:', { invoiceRef, amount, currency, recipientId });
-    console.log('🎭 DEMO_MODE:', DEMO_MODE, typeof DEMO_MODE);
+    console.log('🎭 DEMO_MODE:', DEMO_MODE);
 
-    // Step 1: Create quote
+    // DEMO MODE: Skip API calls and simulate success for BRL
+    if (DEMO_MODE && currency === 'BRL') {
+      console.log('🎭 DEMO MODE: Simulating successful Wise transfer for BRL');
+      const demoTransferId = `demo-wise-${crypto.randomUUID()}`;
+      
+      // Mark payment as settled in database
+      const { error: updateError } = await supabase
+        .from('payments')
+        .update({
+          settlement_provider: 'wise',
+          settlement_id: demoTransferId,
+          settlement_currency: currency,
+          settlement_amount: amount,
+          settlement_fee: 0.01,
+          settlement_requested_at: new Date().toISOString(),
+        })
+        .eq('invoice_id', invoice.id);
+
+      if (updateError) {
+        console.error('❌ Error updating payment:', updateError);
+        return json({ error: 'Failed to update settlement', details: updateError }, 500);
+      }
+
+      console.log('✅ DEMO: Settlement recorded successfully');
+
+      return json({
+        success: true,
+        transferId: demoTransferId,
+        amount: amount,
+        currency: currency,
+        fee: 0.01,
+        demo: true,
+        message: 'Demo mode: Transfer simulated successfully'
+      });
+    }
+
+    // Step 1: Create quote (for non-BRL or non-demo)
     console.log('📊 Step 1: Creating quote...');
     const quoteResponse = await fetch(
       `${WISE_API_BASE}/v3/profiles/${WISE_PROFILE_ID}/quotes`,
