@@ -83,7 +83,8 @@ See [scripts/README.md](scripts/README.md) for details.
 ### Crypto & Payments
 
 * **Solana Web3.js** + **Wallet Adapter** (Phantom, Solflare, etc)
-* **Helius** - Enhanced RPC provider for reliable transaction indexing
+* **Helius RPC** - Enhanced RPC provider used by Para SDK and transaction validation
+* **Para SDK** - Passkey authentication with Helius-powered embedded wallets
 * **Solana Pay** - Industry-standard payment protocol (deep link/QR + `reference`)
 * **Jupiter Exchange** - Multi-token support (100+ SPL tokens, auto-swap)
 * **Solana DEX Integration** - Orca, Raydium, Phoenix for best liquidity
@@ -146,13 +147,13 @@ See [scripts/README.md](scripts/README.md) for details.
 
 ### ✅ Authentication & Multi-Tenancy
 - **Dual Authentication**: Passkey (biometric) + Email/Password
+- **Para SDK Integration** - Passkeys via Para (uses Helius RPC for enhanced reliability)
 - Multi-merchant support with RLS (Row-Level Security)
 - Role-based permissions (owner, manager, cashier)
 - Feature flags per merchant
-- **Passkey Integration** (Partially implemented - Post-hackathon)
-  - UI components ready (PasskeyOnboarding.tsx)
-  - Needs Web3Auth or Para Provider integration
-  - **Roadmap**: Social login (Google/Apple) with embedded wallets
+- **Passkey Status** - UI ready, partial integration (Post-hackathon)
+  - Para Provider configured with Helius RPC
+  - Needs Web3Auth for social login (Google/Apple)
 
 ### ✅ POS (Point of Sale)
 - Mobile-first responsive interface
