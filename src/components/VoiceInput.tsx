@@ -8,8 +8,10 @@ const FUNCTIONS_BASE = (import.meta as any).env?.VITE_SUPABASE_FUNCTIONS_URL || 
 export function VoiceInput() {
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [transcript, setTranscript] = useState<string>('');
+  const [isListening, setIsListening] = useState(false);
+  const [userTranscript, setUserTranscript] = useState<string>('');
   const [aiResponse, setAiResponse] = useState<string>('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -156,20 +158,25 @@ export function VoiceInput() {
           if (msg.type === 'error') {
             console.error('❌ OpenAI error:', msg.error);
             setError(msg.error.message || 'OpenAI error');
-          } else if (msg.type === 'response.audio_transcript.delta') {
-            // Accumulate transcript
-            setTranscript(prev => prev + msg.delta);
-            console.log('📝 Transcript:', msg.delta);
-          } else if (msg.type === 'response.audio_transcript.done') {
-            // Clear transcript when done
-            setTranscript('');
+          } else if (msg.type === 'input_audio_buffer.speech_started') {
+            setIsListening(true);
+            console.log('🎤 Listening...');
+          } else if (msg.type === 'input_audio_buffer.speech_stopped') {
+            setIsListening(false);
+            console.log('⏸️ Stopped listening');
+          } else if (msg.type === 'response.created') {
+            setIsProcessing(true);
+            setAiResponse('');
           } else if (msg.type === 'response.content_part.added') {
             // Accumulate text response from AI
-            if (msg.content_part.type === 'input_text') {
-              setAiResponse(msg.content_part.text);
-            } else if (msg.content_part.type === 'text') {
+            if (msg.content_part?.type === 'text' && msg.content_part.text) {
               setAiResponse(prev => prev + msg.content_part.text);
             }
+          } else if (msg.type === 'response.done') {
+            setIsProcessing(false);
+          } else if (msg.type === 'response.output_audio_transcript.delta') {
+            // This is the AI's speech transcript - show in UI
+            console.log('🎙️ AI speaking:', msg.delta);
           }
         } catch (e) {
           console.error('Error parsing message:', e);
@@ -232,14 +239,32 @@ export function VoiceInput() {
       </div>
 
       {connected && (
-        <div className="mt-4 space-y-2">
-          <div className="p-3 bg-green-500/10 text-green-700 dark:text-green-300 rounded-lg text-sm">
-            ✅ Voice assistant active - speak now!
+        <div className="mt-4 space-y-3">
+          {/* Status */}
+          <div className={`p-3 rounded-lg text-sm transition-colors ${
+            isListening 
+              ? 'bg-orange-500/20 text-orange-700 dark:text-orange-300 border border-orange-300' 
+              : 'bg-green-500/10 text-green-700 dark:text-green-300'
+          }`}>
+            {isListening ? '🎤 Listening...' : '✅ Ready - speak now!'}
           </div>
           
+          {/* AI Response */}
           {aiResponse && (
-            <div className="p-3 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-lg text-sm">
-              <strong>AI:</strong> {aiResponse}
+            <div className="p-3 bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-lg">
+              <div className="flex items-start gap-2">
+                <span className="text-lg">🤖</span>
+                <div className="flex-1">
+                  <strong className="text-xs uppercase">AI Response:</strong>
+                  <p className="mt-1">{aiResponse}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {isProcessing && !aiResponse && (
+            <div className="p-3 bg-purple-500/10 text-purple-700 dark:text-purple-300 rounded-lg text-sm">
+              ⏳ Processing...
             </div>
           )}
         </div>
