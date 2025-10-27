@@ -45,3 +45,4 @@ dist-ssr
 !\.env\.example
 !supabase/functions/.env.example
 node_modules
+.vercel

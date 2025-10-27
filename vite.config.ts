@@ -44,6 +44,11 @@ export default defineConfig(({ mode }) => ({
         // Fix for "exports is not defined" error
         inlineDynamicImports: false,
         format: 'es',
+        // Ensure proper chunking to avoid exports issue
+        manualChunks: {
+          'solana-web3': ['@solana/web3.js', '@solana/wallet-adapter-base', '@solana/wallet-adapter-react'],
+          'supabase': ['@supabase/supabase-js'],
+        },
       },
     },
     commonjsOptions: {
@@ -51,7 +56,11 @@ export default defineConfig(({ mode }) => ({
       ignoreDynamicRequires: true,
       // Fix CommonJS modules in browser
       esmExternals: true,
+      include: [/node_modules/],
     },
+    // Fix for "exports is not defined" error
+    target: 'es2015',
+    minify: 'esbuild',
   },
   optimizeDeps: {
     include: [
