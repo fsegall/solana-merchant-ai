@@ -4,7 +4,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 import { json } from "../_shared/responses.ts";
-import { json } from "../_shared/responses.ts";
 
 const WISE_API_TOKEN = Deno.env.get('WISE_API_TOKEN');
 const WISE_API_BASE = Deno.env.get('WISE_API_BASE') || 'https://api.sandbox.transferwise.tech';
