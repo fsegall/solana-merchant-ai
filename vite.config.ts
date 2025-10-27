@@ -3,41 +3,13 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// Plugin para remover exports problemáticos do bundle final
-const removeExportsPlugin = () => ({
-  name: 'remove-exports',
-  generateBundle(options, bundle) {
-    Object.keys(bundle).forEach(fileName => {
-      const chunk = bundle[fileName];
-      if (chunk.type === 'chunk' && chunk.code) {
-        // Adicionar polyfill de exports no início se não existir
-        if (!chunk.code.includes('var exports') && chunk.code.includes('exports')) {
-          chunk.code = 'var exports = {}; var module = { exports: exports };' + chunk.code;
-        }
-        // Remover todas as declarações problemáticas de exports
-        chunk.code = chunk.code
-          .replace(/var exports;/g, '')
-          .replace(/exports\s*=/g, 'void(0)')
-          .replace(/typeof exports !== "undefined"/g, 'false')
-          .replace(/typeof exports === "undefined"/g, 'true')
-          .replace(/exports\./g, 'undefined.')
-          .replace(/if\s*\(\s*exports\s*\)/g, 'if(false)');
-      }
-    });
-  },
-});
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
   },
-  plugins: [
-    react(), 
-    mode === "development" && componentTagger(),
-    removeExportsPlugin()
-  ].filter(Boolean),
+  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -53,23 +25,9 @@ export default defineConfig(({ mode }) => ({
     'process.env': '{}',
     'process.browser': 'true',
     'process.version': '"v18.0.0"',
-    // Polyfill para exports
-    'exports': '{}',
-    'module.exports': '{}',
   },
   build: {
     rollupOptions: {
-      external: [
-        // Mark Cosmos dependencies as external (not needed for Solana-only app)
-        '@getpara/graz',
-        '@getpara/cosmos-wallet-connectors',
-        // Mark Ethereum dependencies as external (not needed for Solana-only app)
-        'wagmi',
-        '@wagmi/core',
-        'wagmi/connectors',
-        '@getpara/evm-wallet-connectors',
-        '@getpara/wagmi-v2-connector',
-      ],
       output: {
         format: 'es',
         manualChunks: {
