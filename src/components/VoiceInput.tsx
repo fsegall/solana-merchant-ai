@@ -100,17 +100,11 @@ export function VoiceInput() {
         const sessionUpdate = {
           type: 'session.update',
           session: {
-            type: 'realtime', // ⚡ Required for GA API
-            model: model,
+            modalities: ['text', 'audio'],
             instructions: 'You are a helpful voice assistant for a point-of-sale system. Help users and answer questions concisely.',
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
-            turn_detection: {
-              type: 'server_vad',
-              threshold: 0.5,
-              prefix_padding_ms: 300,
-              silence_duration_ms: 500
-            }
+            tools: [],
           }
         };
         console.log('📤 Sending session.update');
