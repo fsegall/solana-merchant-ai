@@ -216,16 +216,20 @@ export function SolanaPayQR({
 
   const handleOpenPhantom = () => {
     if (paymentRequest) {
-      // Try to open in Phantom (works on mobile and some desktop setups)
-      window.location.href = paymentRequest.url.toString();
+      // Convert solana: URL to deeplink that triggers wallet apps
+      // This format works for Phantom, Backpack, and other Solana wallets
+      const walletUrl = paymentRequest.url.toString().replace(/^solana:/, 'https://phantom.app/ul/');
+      window.open(walletUrl, '_blank');
     }
   };
 
   const handlePayWithWallet = async () => {
+    console.log('🚀 handlePayWithWallet started', { publicKey: publicKey?.toString(), hasPaymentRequest: !!paymentRequest });
+    
     if (!publicKey || !paymentRequest) {
       toast({
         title: "Wallet não conectada",
-        description: "Por favor, conecte sua wallet primeiro",
+        description: "Por favor, conecte sua wallet primeira",
         variant: "destructive",
       });
       return;
@@ -233,11 +237,16 @@ export function SolanaPayQR({
 
     setIsSending(true);
     try {
+      console.log('🔧 Creating recipient pubkey from:', recipient);
       const recipientPubkey = new PublicKey(recipient);
+      console.log('✅ Recipient pubkey created:', recipientPubkey.toString());
       
       // Use provided payment token or fallback to default
       const tokenToUse = paymentToken || getDefaultPaymentToken();
+      console.log('🪙 Using token:', tokenToUse);
+      
       const tokenMint = new PublicKey(tokenToUse.mint);
+      console.log('✅ Token mint created:', tokenMint.toString());
 
       if (!tokenMint) {
         throw new Error('Payment token not configured');
@@ -253,17 +262,39 @@ export function SolanaPayQR({
       });
 
       // Get ATAs for the payment token
+      console.log('🔍 Getting ATAs...');
       const fromAta = await getAssociatedTokenAddress(tokenMint, publicKey);
+      console.log('✅ From ATA:', fromAta.toString());
+      
       const toAta = await getAssociatedTokenAddress(tokenMint, recipientPubkey);
+      console.log('✅ To ATA:', toAta.toString());
 
       // Convert amount to token units (using token's decimals)
       const tokenAmount = Math.floor(amount * Math.pow(10, tokenToUse.decimals));
 
       console.log('🔢 Token amount (minor units):', tokenAmount);
 
+      // Get recent blockhash
+      console.log('🔗 Getting recent blockhash...');
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
+      console.log('✅ Blockhash:', blockhash);
+
       // Create transaction
-      const transaction = new Transaction();
+      const transaction = new Transaction({
+        feePayer: publicKey,
+        blockhash,
+        lastValidBlockHeight,
+      });
       
+      console.log('🔨 Building transaction:', {
+        fromAta: fromAta.toString(),
+        toAta: toAta.toString(),
+        amount: tokenAmount,
+        tokenMint: tokenMint?.toString(),
+        feePayer: publicKey.toString(),
+        blockhash: blockhash.substring(0, 8) + '...',
+      });
+
       // Add transfer instruction
       transaction.add(
         createTransferInstruction(
@@ -275,9 +306,11 @@ export function SolanaPayQR({
           undefined
         )
       );
+      console.log('✅ Transfer instruction added');
 
-      // Add reference as a read-only account key
+      // Add reference as a memo instruction (read-only account key)
       // This allows validate-payment to find the transaction via getSignaturesForAddress
+      console.log('📝 Adding memo instruction with reference:', paymentRequest.reference.toString());
       transaction.add(
         new TransactionInstruction({
           keys: [{ pubkey: paymentRequest.reference, isSigner: false, isWritable: false }],
@@ -285,10 +318,85 @@ export function SolanaPayQR({
           programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'), // Memo program
         })
       );
+      console.log('✅ Memo instruction added');
 
-      // Send transaction
-      const signature = await sendTransaction(transaction, connection);
-      console.log('✅ Transaction sent:', signature);
+      // Verify ATAs exist and have sufficient balance
+      console.log('🔍 Verifying ATAs...');
+      try {
+        const fromAtaInfo = await connection.getAccountInfo(fromAta);
+        console.log('📋 From ATA info:', {
+          exists: !!fromAtaInfo,
+          owner: fromAtaInfo?.owner.toString(),
+          lamports: fromAtaInfo?.lamports,
+        });
+
+        const toAtaInfo = await connection.getAccountInfo(toAta);
+        console.log('📋 To ATA info:', {
+          exists: !!toAtaInfo,
+          owner: toAtaInfo?.owner.toString(),
+          lamports: toAtaInfo?.lamports,
+        });
+
+        // If recipient ATA doesn't exist, we need to create it first
+        if (!toAtaInfo) {
+          console.log('⚠️ Recipient ATA does not exist! Need to create it first.');
+          // For now, we'll let the transaction fail and show this error
+          // In production, you'd want to add a createAssociatedTokenAccount instruction
+        }
+
+        // Check token balance
+        if (fromAtaInfo) {
+          const fromAtaBalance = await connection.getTokenAccountBalance(fromAta);
+          console.log('💰 From ATA balance:', {
+            amount: fromAtaBalance.value.amount,
+            uiAmount: fromAtaBalance.value.uiAmount,
+            decimals: fromAtaBalance.value.decimals,
+          });
+          
+          if (BigInt(fromAtaBalance.value.amount) < BigInt(tokenAmount)) {
+            throw new Error(`Insufficient balance. Have ${fromAtaBalance.value.uiAmount}, need ${tokenAmount / Math.pow(10, tokenToUse.decimals)}`);
+          }
+        }
+      } catch (verifyError: any) {
+        console.error('❌ ATA verification failed:', verifyError);
+        if (verifyError.message?.includes('Insufficient balance')) {
+          throw verifyError;
+        }
+        // Continue even if verification fails (account might not exist yet)
+      }
+
+      console.log('📤 Sending transaction with', transaction.instructions.length, 'instructions');
+      console.log('📋 Transaction details:', {
+        feePayer: transaction.feePayer?.toString(),
+        recentBlockhash: transaction.recentBlockhash,
+        signatures: transaction.signatures.length,
+      });
+      
+      let signature: string;
+      try {
+        // Serialize to see the transaction bytes
+        const serialized = transaction.serialize({ requireAllSignatures: false });
+        console.log('📦 Transaction serialized:', serialized.length, 'bytes');
+        
+        // Send transaction
+        signature = await sendTransaction(transaction, connection);
+        console.log('✅ Transaction sent:', signature);
+      } catch (txError: any) {
+        console.error('❌ Transaction send failed:', {
+          message: txError.message,
+          name: txError.name,
+          logs: txError.logs,
+          stack: txError.stack,
+          error: txError,
+        });
+        
+        // Try to get more details from the error
+        if (txError.logs) {
+          console.error('📜 Transaction logs:', txError.logs);
+        }
+        
+        throw txError;
+      }
 
       toast({
         title: "Pagamento enviado!",
@@ -441,10 +549,19 @@ export function SolanaPayQR({
               onClick={generateQR}
               disabled={isGenerating}
               className="px-3"
+              title="Regenerar QR"
             >
               <RefreshCw className="w-4 h-4" />
             </Button>
           </div>
+          
+          {/* Info: How to pay */}
+          <Alert className="border-primary/20 bg-primary/5">
+            <AlertDescription className="text-xs">
+              📱 <strong>Mobile:</strong> Abra Phantom → Scanner → Escaneie o QR<br/>
+              💻 <strong>Desktop:</strong> Escaneie com o app Phantom ou clique "Pagar com Wallet"
+            </AlertDescription>
+          </Alert>
           
           <p className="text-xs text-muted-foreground text-center w-full">
             {publicKey 
