@@ -100,6 +100,7 @@ export function VoiceInput() {
         const sessionUpdate = {
           type: 'session.update',
           session: {
+            type: 'realtime',
             modalities: ['text', 'audio'],
             instructions: 'You are a helpful voice assistant for a point-of-sale system. Help users and answer questions concisely.',
             tools: [],
