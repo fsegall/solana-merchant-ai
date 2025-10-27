@@ -138,6 +138,7 @@ export function QRCodePanel({ receipt, onClose, paymentToken, settlementToken, a
           recipient={merchantRecipient.toString()}
           amount={receipt.amountBRL}
           existingReference={receipt.reference}
+          receiptRef={receipt.ref}
           label={`Payment ${receipt.ref}`}
           message={`Pay R$ ${receipt.amountBRL.toFixed(2)}`}
           onPaymentConfirmed={(txHash) => {

@@ -19,7 +19,8 @@ export type PaymentStatus = 'generating' | 'active' | 'expired' | 'paid' | 'erro
 interface SolanaPayQRProps {
   recipient: string;
   amount: number; // Amount in BRL (will be converted)
-  existingReference?: string; // Use existing invoice reference instead of generating new one
+  existingReference?: string; // Solana PublicKey reference for payment
+  receiptRef?: string; // Invoice ref (REFXXXX) for validation
   label?: string;
   message?: string;
   onPaymentConfirmed?: (txHash: string) => void;
@@ -34,6 +35,7 @@ export function SolanaPayQR({
   recipient,
   amount,
   existingReference,
+  receiptRef,
   label,
   message,
   onPaymentConfirmed,
@@ -124,8 +126,10 @@ export function SolanaPayQR({
 
       setPaymentRequest(request);
       setStatus('active');
-      // Use the reference from the request for polling
-      startPolling(request.reference.toString());
+      // Use receiptRef (REFXXXX) for polling, not Solana PublicKey
+      const refForValidation = receiptRef || request.reference.toString();
+      console.log('🔍 Will poll with ref:', refForValidation);
+      startPolling(refForValidation);
     } catch (err) {
       console.error('Failed to generate QR:', err);
       setStatus('error');
