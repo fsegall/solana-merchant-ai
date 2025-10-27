@@ -172,6 +172,20 @@ export function VoiceInput() {
             // Check if it's assistant message
             if (msg.item?.role === 'assistant') {
               console.log('🤖 Assistant response started');
+              console.log('📄 Full item:', JSON.stringify(msg.item, null, 2));
+              
+              // Try to extract text from content
+              if (msg.item.content && Array.isArray(msg.item.content)) {
+                for (const part of msg.item.content) {
+                  if (part.type === 'text' && part.text) {
+                    setAiResponse(part.text);
+                    console.log('✅ Got text response:', part.text);
+                  } else if (part.transcript) {
+                    setAiResponse(part.transcript);
+                    console.log('✅ Got transcript:', part.transcript);
+                  }
+                }
+              }
             }
           } else if (msg.type === 'response.content_part.added') {
             // Show the full message for debugging
