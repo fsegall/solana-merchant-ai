@@ -8,6 +8,7 @@ import { useMerchant } from '@/hooks/useMerchant';
 import { useTranslation } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 import { BottomTabs } from '@/components/BottomTabs';
+import { HeaderBar } from '@/components/HeaderBar';
 
 export default function Landing() {
   const { t } = useTranslation();
@@ -17,22 +18,23 @@ export default function Landing() {
     {
       icon: Wallet,
       title: t('landing.feature1'),
-      description: 'Receba pagamentos em Solana com confirmação on-chain',
+      description: t('landing.feature1Desc'),
     },
     {
       icon: Receipt,
       title: t('landing.feature2'),
-      description: 'Opção de liquidação automática para sua conta bancária',
+      description: t('landing.feature2Desc'),
     },
     {
       icon: FileText,
       title: t('landing.feature3'),
-      description: 'Comprovantes PIX-like e exportação de dados',
+      description: t('landing.feature3Desc'),
     },
   ];
 
   return (
     <div className="min-h-screen flex flex-col pb-16 md:pb-0 bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      <HeaderBar title={t('landing.title')} />
       <div className="container mx-auto px-4 py-16 max-w-6xl flex-1">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -45,7 +47,7 @@ export default function Landing() {
             </Badge>
           )}
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            {t('landing.title')}
+            Merchant AI Checkout
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             {t('landing.subtitle')}
@@ -93,13 +95,13 @@ export default function Landing() {
           className="text-center"
         >
           <Card className="p-8 max-w-2xl mx-auto bg-primary/5 border-primary/20">
-            <h2 className="text-2xl font-bold mb-4">Pronto para começar?</h2>
+            <h2 className="text-2xl font-bold mb-4">{t('landing.ctaTitle')}</h2>
             <p className="text-muted-foreground mb-6">
-              Configure sua loja em minutos e comece a aceitar pagamentos em crypto com liquidação opcional em PIX.
+              {t('landing.ctaDescription')}
             </p>
             <Link to="/onboarding">
               <Button variant="outline" size="lg">
-                Configurar Agora
+                {t('landing.ctaButton')}
               </Button>
             </Link>
           </Card>

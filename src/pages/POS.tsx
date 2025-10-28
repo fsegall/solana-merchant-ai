@@ -126,7 +126,7 @@ export default function POS() {
                 className="mb-6"
               >
                 <h2 className="text-sm font-medium text-muted-foreground mb-3">
-                  Transações Recentes
+                  {t('pos.recentTransactions')}
                 </h2>
                 <div className="space-y-2">
                   {recentReceipts.map((receipt) => (

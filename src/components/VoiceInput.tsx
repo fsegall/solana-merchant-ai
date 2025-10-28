@@ -171,10 +171,13 @@ export function VoiceInput() {
         console.log('🎙️ Audio processing started');
       });
 
-      ws.addEventListener('message', (event) => {
+        ws.addEventListener('message', (event) => {
         try {
           const msg = JSON.parse(event.data);
-          console.log('📨 Message:', msg.type, msg);
+          // Log all messages for debugging
+          if (msg.type !== 'conversation.item.created' && msg.type !== 'input_audio_buffer.speech_started' && msg.type !== 'input_audio_buffer.speech_stopped') {
+            console.log('📨 Message:', msg.type, msg);
+          }
           
           if (msg.type === 'error') {
             console.error('❌ OpenAI error:', msg.error);
