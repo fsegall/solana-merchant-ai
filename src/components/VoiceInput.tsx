@@ -2,12 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Mic, MicOff } from 'lucide-react';
-
-// Get Supabase URL from environment and construct functions URL
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const FUNCTIONS_BASE = supabaseUrl 
-  ? `${supabaseUrl}/functions/v1` 
-  : 'https://manapcpsteotonrpdtjw.supabase.co/functions/v1';
+import { EDGE_FUNCTIONS_BASE } from '@/config';
 
 export function VoiceInput() {
   const [connected, setConnected] = useState(false);
@@ -69,7 +64,7 @@ export function VoiceInput() {
 
       // 1a) Get context from Edge Function
       console.log('📊 Fetching payment context...');
-      const contextRes = await fetch(`${FUNCTIONS_BASE}/voice-context`, {
+      const contextRes = await fetch(`${EDGE_FUNCTIONS_BASE}/voice-context`, {
         method: 'GET',
         headers: { 
           'Authorization': `Bearer ${token}`
@@ -89,7 +84,7 @@ export function VoiceInput() {
         }
       }
 
-      const r = await fetch(`${FUNCTIONS_BASE}/openai-realtime-token`, {
+      const r = await fetch(`${EDGE_FUNCTIONS_BASE}/openai-realtime-token`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

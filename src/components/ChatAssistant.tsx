@@ -7,21 +7,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from '@/lib/i18n';
+import { EDGE_FUNCTIONS_BASE } from '@/config';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
 }
-
-// Get Supabase URL from environment and construct functions URL
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const FUNCTIONS_BASE = supabaseUrl 
-  ? `${supabaseUrl}/functions/v1` 
-  : 'https://manapcpsteotonrpdtjw.supabase.co/functions/v1';
-
-console.log('🔍 ChatAssistant FUNCTIONS_BASE:', FUNCTIONS_BASE);
-console.log('🔍 ChatAssistant VITE_SUPABASE_URL:', supabaseUrl);
 
 export function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -81,7 +73,7 @@ export function ChatAssistant() {
 
       if (!token) throw new Error('no auth token');
 
-      const response = await fetch(`${FUNCTIONS_BASE}/chat-assistant`, {
+      const response = await fetch(`${EDGE_FUNCTIONS_BASE}/chat-assistant`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
