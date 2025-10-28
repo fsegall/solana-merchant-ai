@@ -112,6 +112,16 @@ export const translations = {
     'common.search': 'Search',
     'common.status': 'Status',
     'common.loading': 'Loading...',
+
+    // Chat
+    'chat.greeting': 'Hello! I'm your AI assistant. How can I help you today?',
+    'chat.sendError': 'Sorry, I couldn't process your message.',
+    'chat.error': 'Chat Error',
+    'chat.errorDescription': 'Could not send message. Please try again.',
+    'chat.errorRetry': 'Sorry, an error occurred. Please try again.',
+    'chat.placeholder': 'Type your message...',
+    'chat.hint': 'Press Enter to send',
+    'chat.title': 'AI Assistant',
   },
   pt: {
     // Navigation
@@ -224,6 +234,16 @@ export const translations = {
     'common.search': 'Buscar',
     'common.status': 'Status',
     'common.loading': 'Carregando...',
+
+    // Chat
+    'chat.greeting': 'Olá! Sou seu assistente AI. Como posso ajudar você hoje?',
+    'chat.sendError': 'Desculpe, não consegui processar sua mensagem.',
+    'chat.error': 'Erro no chat',
+    'chat.errorDescription': 'Não foi possível enviar a mensagem. Tente novamente.',
+    'chat.errorRetry': 'Desculpe, ocorreu um erro. Por favor, tente novamente.',
+    'chat.placeholder': 'Digite sua mensagem...',
+    'chat.hint': 'Pressione Enter para enviar',
+    'chat.title': 'Assistente AI',
   },
 };
 

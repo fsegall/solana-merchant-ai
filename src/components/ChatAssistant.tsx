@@ -6,6 +6,7 @@ import { Bot, Send, X, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from '@/lib/i18n';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -13,14 +14,19 @@ interface Message {
   timestamp: Date;
 }
 
-const FUNCTIONS_BASE = (import.meta as any).env?.VITE_SUPABASE_FUNCTIONS_URL || '/functions/v1';
+// Get Supabase URL from environment and construct functions URL
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const FUNCTIONS_BASE = supabaseUrl 
+  ? `${supabaseUrl}/functions/v1` 
+  : 'https://manapcpsteotonrpdtjw.supabase.co/functions/v1';
 
 export function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Olá! Sou seu assistente AI. Como posso ajudar você hoje?',
+      content: t('chat.greeting'),
       timestamp: new Date(),
     },
   ]);
@@ -81,7 +87,7 @@ export function ChatAssistant() {
       
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.message || 'Desculpe, não consegui processar sua mensagem.',
+        content: data.message || t('chat.sendError'),
         timestamp: new Date(),
       };
 
@@ -89,14 +95,14 @@ export function ChatAssistant() {
     } catch (error) {
       console.error('Chat error:', error);
       toast({
-        title: '❌ Erro no chat',
-        description: 'Não foi possível enviar a mensagem. Tente novamente.',
+        title: `❌ ${t('chat.error')}`,
+        description: t('chat.errorDescription'),
         variant: 'destructive',
       });
       
       const errorMessage: Message = {
         role: 'assistant',
-        content: 'Desculpe, ocorreu um erro. Por favor, tente novamente.',
+        content: t('chat.errorRetry'),
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -144,7 +150,7 @@ export function ChatAssistant() {
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 bg-primary text-primary-foreground">
                 <div className="flex items-center gap-2">
                   <Bot className="h-5 w-5" />
-                  <CardTitle className="text-lg">AI Assistant</CardTitle>
+                  <CardTitle className="text-lg">{t('chat.title')}</CardTitle>
                 </div>
                 <Button
                   variant="ghost"
@@ -200,7 +206,7 @@ export function ChatAssistant() {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Digite sua mensagem..."
+                      placeholder={t('chat.placeholder')}
                       disabled={loading}
                       className="flex-1"
                     />
@@ -213,7 +219,7 @@ export function ChatAssistant() {
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Pressione Enter para enviar
+                    {t('chat.hint')}
                   </p>
                 </div>
               </CardContent>
