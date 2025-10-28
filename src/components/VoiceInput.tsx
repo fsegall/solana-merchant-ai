@@ -3,7 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Mic, MicOff } from 'lucide-react';
 
-const FUNCTIONS_BASE = (import.meta as any).env?.VITE_SUPABASE_FUNCTIONS_URL || '/functions/v1';
+// Get Supabase URL from environment and construct functions URL
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const FUNCTIONS_BASE = supabaseUrl 
+  ? `${supabaseUrl}/functions/v1` 
+  : 'https://manapcpsteotonrpdtjw.supabase.co/functions/v1';
 
 export function VoiceInput() {
   const [connected, setConnected] = useState(false);
