@@ -114,7 +114,7 @@ export const translations = {
     'common.loading': 'Loading...',
 
     // Chat
-    'chat.greeting': 'Hello! I'm your AI assistant. How can I help you today?',
+    'chat.greeting': 'Hello! I am your AI assistant. How can I help you today?',
     'chat.sendError': 'Sorry, I couldn't process your message.',
     'chat.error': 'Chat Error',
     'chat.errorDescription': 'Could not send message. Please try again.',
