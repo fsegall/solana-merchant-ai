@@ -22,8 +22,6 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-export const VITE_SUPABASE_URL = "https://niocfujcwmbwictdpfsn.supabase.co"
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ParaProvider>
