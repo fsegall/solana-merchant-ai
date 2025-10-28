@@ -56,7 +56,7 @@ export const supabaseHelpers = {
       _amount_brl: amountBRL,
       _ref: ref,
       _product_ids: productIds,
-      _reference: reference,
+      _reference: reference || null,
     });
 
     if (error) {
@@ -64,8 +64,8 @@ export const supabaseHelpers = {
       throw error;
     }
 
-    // Retorna o ref da invoice criada
-    return data?.[0]?.ref || ref;
+    // Function returns UUID, but we return the ref string we passed
+    return ref;
   },
 
   /**
