@@ -20,6 +20,9 @@ const FUNCTIONS_BASE = supabaseUrl
   ? `${supabaseUrl}/functions/v1` 
   : 'https://manapcpsteotonrpdtjw.supabase.co/functions/v1';
 
+console.log('🔍 ChatAssistant FUNCTIONS_BASE:', FUNCTIONS_BASE);
+console.log('🔍 ChatAssistant VITE_SUPABASE_URL:', supabaseUrl);
+
 export function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const { t, lang } = useTranslation();
