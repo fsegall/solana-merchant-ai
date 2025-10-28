@@ -22,14 +22,8 @@ const FUNCTIONS_BASE = supabaseUrl
 
 export function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
-  const { t } = useTranslation();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: t('chat.greeting'),
-      timestamp: new Date(),
-    },
-  ]);
+  const { t, lang } = useTranslation();
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -38,6 +32,28 @@ export function ChatAssistant() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Initialize greeting message
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([{
+        role: 'assistant',
+        content: t('chat.greeting'),
+        timestamp: new Date(),
+      }]);
+    }
+  }, [t, messages.length]);
+
+  // Update greeting when language changes
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].role === 'assistant') {
+      setMessages([{
+        role: 'assistant',
+        content: t('chat.greeting'),
+        timestamp: new Date(),
+      }]);
+    }
+  }, [lang, t]);
 
   useEffect(() => {
     scrollToBottom();
