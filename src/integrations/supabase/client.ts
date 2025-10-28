@@ -2,29 +2,19 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-// Try multiple environment variable names for compatibility with Lovable Cloud
-const SUPABASE_URL = 
-  import.meta.env.VITE_SUPABASE_URL ||
-  import.meta.env.SUPABASE_URL ||
-  import.meta.env.VITE_SUPABASE_PROJECT_URL ||
-  'https://niocfujcwmbwictdpfsn.supabase.co';
-
-const SUPABASE_KEY =
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  import.meta.env.SUPABASE_ANON_KEY ||
-  import.meta.env.VITE_SUPABASE_PROJECT_ANON_KEY ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pb2NmdWpjd21id2ljdGRwZnNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0NzkzOTQsImV4cCI6MjA3NTA1NTM5NH0.4DdbL340eBQ7Tfd9HJZaqMwFYs4reVFU_k-NFz78zYE';
+// Get Supabase URL from environment
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Validate required environment variables with helpful error messages
 if (!SUPABASE_URL) {
   console.error('Available env vars:', Object.keys(import.meta.env).filter(k => k.includes('SUPABASE')));
-  throw new Error('Supabase URL not found. Checked: VITE_SUPABASE_URL, SUPABASE_URL, VITE_SUPABASE_PROJECT_URL');
+  throw new Error('Supabase URL not found. Please set VITE_SUPABASE_URL environment variable.');
 }
 
 if (!SUPABASE_KEY) {
   console.error('Available env vars:', Object.keys(import.meta.env).filter(k => k.includes('SUPABASE')));
-  throw new Error('Supabase key not found. Checked: VITE_SUPABASE_PUBLISHABLE_KEY, VITE_SUPABASE_ANON_KEY, SUPABASE_ANON_KEY, VITE_SUPABASE_PROJECT_ANON_KEY');
+  throw new Error('Supabase key not found. Please set VITE_SUPABASE_ANON_KEY environment variable.');
 }
 
 // Import the supabase client like this:
