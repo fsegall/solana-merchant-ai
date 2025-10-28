@@ -115,7 +115,7 @@ export const translations = {
 
     // Chat
     'chat.greeting': 'Hello! I am your AI assistant. How can I help you today?',
-    'chat.sendError': 'Sorry, I couldn't process your message.',
+    'chat.sendError': 'Sorry, I could not process your message.',
     'chat.error': 'Chat Error',
     'chat.errorDescription': 'Could not send message. Please try again.',
     'chat.errorRetry': 'Sorry, an error occurred. Please try again.',
