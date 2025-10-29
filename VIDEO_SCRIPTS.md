@@ -17,9 +17,10 @@
 - "Let me show you why this matters"
 
 **Team Background (30s)**
-- "I'm a full-stack developer with experience in DeFi and payment systems"
-- "Previously built settlement infrastructure for Brazilian crypto merchants"
-- "Deep expertise in Solana ecosystem and real-time payments"
+- "I'm Felipe Segall, full-stack web3 developer and team leader"
+- "Our team includes Paulo Marinato - Project Manager and DeFi Specialist, Conrado Niemeyer - full-stack web3 developer and Graphic Artist, and Daniel Gorgonha - Software Engineer"
+- "We're completing a postgraduate program in Web3, Smart Contracts, and Tokenization at Nearx Brazil"
+- "We're relatively new to Solana, but this hackathon pushed us to learn fast and build something we're proud of"
 
 **The Problem (45s)**
 - Show statistics: "70% of small merchants can't accept crypto"
