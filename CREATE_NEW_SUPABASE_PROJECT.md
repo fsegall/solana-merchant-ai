@@ -1,103 +1,102 @@
-# 🚀 Criar Novo Projeto Supabase do Zero
+# 🚀 Create New Supabase Project from Scratch
 
-## 📋 Passo a Passo Completo
+## 📋 Complete Step-by-Step Guide
 
-### 1️⃣ Criar Novo Projeto no Supabase
+### 1️⃣ Create New Project on Supabase
 
-1. Acesse: https://supabase.com/dashboard
-2. Clique em **"New Project"**
-3. Preencha:
+1. Visit: https://supabase.com/dashboard
+2. Click **"New Project"**
+3. Fill in:
    - **Name**: `pos-cashier-production`
-   - **Database Password**: (anote bem!)
-   - **Region**: escolha a mais próxima (recommend: us-east-1)
-4. Clique em **"Create new project"**
-5. **Aguarde** ~2 minutos para a criação
+   - **Database Password**: (save this!)
+   - **Region**: choose the closest one (recommend: us-east-1)
+4. Click **"Create new project"**
+5. **Wait** ~2 minutes for creation
 
-### 2️⃣ Obter Credenciais
+### 2️⃣ Get Credentials
 
-Após criar, vá em **Settings > API** e copie:
+After creation, go to **Settings > API** and copy:
 
 ```env
-# No arquivo .env.local (para testes locais)
+# In .env.local file (for local testing)
 VITE_SUPABASE_URL=https://manapcpsteotonrpdtjw.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGc...
 ```
 
-### 3️⃣ Linkar Projeto Localmente
+### 3️⃣ Link Project Locally
 
-Execute no terminal:
+Run in terminal:
 
 ```bash
-# Link o projeto novo
-npx supabase link --project-ref SEU-PROJECT-ID
+# Link the new project
+npx supabase link --project-ref YOUR-PROJECT-ID
 
-# Substitua SEU-PROJECT-ID pelo ID do projeto (sem .supabase.co)
-# Exemplo: npx supabase link --project-ref abcdefghijklmnop
+# Replace YOUR-PROJECT-ID with the project ID (without .supabase.co)
+# Example: npx supabase link --project-ref abcdefghijklmnop
 ```
 
-### 4️⃣ Aplicar Todas as Migrations
+### 4️⃣ Apply All Migrations
 
 ```bash
-# Isso vai aplicar todas as 22 migrations na ordem correta
+# This will apply all 22 migrations in the correct order
 npx supabase db push
 ```
 
-Isso vai criar:
-- ✅ Tabelas (merchants, invoices, payments, etc.)
-- ✅ Funções RPC (create_invoice_with_payment, etc.)
+This will create:
+- ✅ Tables (merchants, invoices, payments, etc.)
+- ✅ RPC Functions (create_invoice_with_payment, etc.)
 - ✅ Views
 - ✅ RLS Policies
-- ✅ Índices
+- ✅ Indexes
 
-### 5️⃣ Criar Primeiro Usuário
+### 5️⃣ Create First User
 
-Acesse a seção **Authentication > Users** e crie um teste:
+Visit **Authentication > Users** and create a test user:
 
-1. Vá em: Settings > Authentication
-2. Copie o email de convite OU crie manualmente
-3. Use esse usuário para testar
+1. Go to: Settings > Authentication
+2. Copy invite email OR create manually
+3. Use this user for testing
 
-### 6️⃣ Atualizar Vercel
+### 6️⃣ Update Vercel
 
-Acesse: https://vercel.com/fsegalls-projects/pos-cashier/settings/environment-variables
+Visit: https://vercel.com/fsegalls-projects/pos-cashier/settings/environment-variables
 
-Atualize estas variáveis:
+Update these variables:
 
 ```env
-VITE_SUPABASE_URL=https://SEU-NOVO-PROJECT-ID.supabase.co
-VITE_SUPABASE_ANON_KEY=sua-nova-anon-key
+VITE_SUPABASE_URL=https://YOUR-NEW-PROJECT-ID.supabase.co
+VITE_SUPABASE_ANON_KEY=your-new-anon-key
 ```
 
-### 7️⃣ Fazer Redeploy
+### 7️⃣ Redeploy
 
 ```bash
 vercel --prod
 ```
 
-## ⚠️ Importante
+## ⚠️ Important
 
-- **Backup**: Se você tinha dados no projeto Lovable, faça export antes
-- **Users**: Você precisará criar novos usuários (o Lovable é separado)
-- **Merchants**: Criar merchants manualmente via SQL ou criar interface
+- **Backup**: If you had data on Lovable project, export before migrating
+- **Users**: You'll need to create new users (Lovable is separate)
+- **Merchants**: Create merchants manually via SQL or create interface
 
-## 📝 SQL para Criar Primeiro Merchant
+## 📝 SQL to Create First Merchant
 
-Depois de aplicar migrations, execute isto no SQL Editor:
+After applying migrations, run this in SQL Editor:
 
 ```sql
--- Criar um merchant de teste
+-- Create a test merchant
 INSERT INTO public.merchants (name, status) 
-VALUES ('Meu Merchant', 'active')
+VALUES ('My Merchant', 'active')
 RETURNING id;
 
--- Nota o ID retornado e associe ao seu usuário (substitua os UUIDs):
+-- Note the returned ID and associate with your user (replace UUIDs):
 INSERT INTO public.merchant_members (merchant_id, user_id, role, status, is_default)
 VALUES (
-  'MERCHANT_ID_ACIMA',
+  'MERCHANT_ID_ABOVE',
   auth.uid(), 
   'owner', 
   'active',
   true
 );
 ```
-
