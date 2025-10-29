@@ -119,6 +119,9 @@ export const translations = {
     'common.search': 'Search',
     'common.status': 'Status',
     'common.loading': 'Loading...',
+    'header.logout': 'Logout',
+    'header.disconnect': 'Disconnect',
+    'header.voiceAssistant': 'Voice assistant',
 
     // Chat
     'chat.greeting': 'Hello! I am your AI assistant. How can I help you today?',
@@ -248,6 +251,9 @@ export const translations = {
     'common.search': 'Buscar',
     'common.status': 'Status',
     'common.loading': 'Carregando...',
+    'header.logout': 'Sair',
+    'header.disconnect': 'Desconectar',
+    'header.voiceAssistant': 'Assistente de voz',
 
     // Chat
     'chat.greeting': 'Olá! Sou seu assistente AI. Como posso ajudar você hoje?',

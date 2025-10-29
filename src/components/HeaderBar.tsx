@@ -27,7 +27,7 @@ interface HeaderBarProps {
 export function HeaderBar({ showBack, title }: HeaderBarProps) {
   const navigate = useNavigate();
   const { flags } = useMerchant();
-  const { lang, setLanguage } = useTranslation();
+  const { lang, setLanguage, t } = useTranslation();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const { toast } = useToast();
   
@@ -112,16 +112,16 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
             size="sm" 
             onClick={handleLogout}
             className="border-red-500/50 hover:bg-red-50 dark:hover:bg-red-950 hover:text-red-600 dark:hover:text-red-400"
-            aria-label="Desconectar"
-            title="Desconectar"
+            aria-label={t('header.disconnect')}
+            title={t('header.disconnect')}
           >
             <LogOut className="h-4 w-4 mr-1.5" />
-            Sair
+            {t('header.logout')}
           </Button>
           
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Voice assistant">
+              <Button variant="ghost" size="icon" aria-label={t('header.voiceAssistant')}>
                 <Mic className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
