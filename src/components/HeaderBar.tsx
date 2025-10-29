@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Moon, Sun, Globe, ArrowLeft, Mic, LogOut } from 'lucide-react';
+import { Moon, Sun, Globe, ArrowLeft, Mic, LogOut, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useMerchant } from '@/hooks/useMerchant';
@@ -102,11 +102,42 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
           {flags && flags.demoMode && <Badge variant="secondary">Demo</Badge>}
         </div>
 
-        <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
-          {/* Solana Wallet Button */}
+        {/* Mobile (xs) compact controls */}
+        <div className="flex items-center gap-1 sm:hidden">
+          {/* Wallet */}
           <WalletMultiButton />
-          
-          {/* Logout Button - sempre visível */}
+          {/* Voice */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label={t('header.voiceAssistant')}>
+                <Mic className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-80 p-0">
+              <VoiceInput />
+            </PopoverContent>
+          </Popover>
+          {/* More menu: language, theme, logout */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" aria-label="More">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setLanguage('en')}>English {lang === 'en' && '✓'}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('pt')}>Português {lang === 'pt' && '✓'}</DropdownMenuItem>
+              <DropdownMenuItem onClick={toggleTheme}>
+                {theme === 'light' ? 'Dark mode' : 'Light mode'}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>{t('header.logout')}</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Desktop / sm+ full controls */}
+        <div className="hidden sm:flex items-center gap-2">
+          <WalletMultiButton />
           <Button 
             variant="outline" 
             size="sm" 
@@ -115,10 +146,9 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
             aria-label={t('header.disconnect')}
             title={t('header.disconnect')}
           >
-            <LogOut className="h-4 w-4 mr-0 sm:mr-1.5" />
-            <span className="hidden sm:inline">{t('header.logout')}</span>
+            <LogOut className="h-4 w-4 mr-1.5" />
+            {t('header.logout')}
           </Button>
-          
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon" aria-label={t('header.voiceAssistant')}>
@@ -144,7 +174,6 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
           <Button variant="ghost" size="icon" onClick={toggleTheme}>
             {theme === 'light' ? (
               <Moon className="h-4 w-4" />
