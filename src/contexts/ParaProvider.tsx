@@ -21,8 +21,15 @@ interface ParaProviderProps {
  * - Integration with Helius RPC for optimal performance
  */
 export const ParaProvider: FC<ParaProviderProps> = ({ children }) => {
-  // Get Para API key from environment
-  const paraApiKey = import.meta.env.VITE_PARA_API_KEY || 'beta_YOUR_API_KEY_GOES_HERE';
+  // Get Para API key and environment from environment variables
+  const paraApiKey = import.meta.env.VITE_PARA_API_KEY || '';
+  const paraEnvRaw = (import.meta.env.VITE_PARA_ENV || 'beta').toLowerCase();
+  const paraEnv: Environment =
+    paraEnvRaw === 'prod' || paraEnvRaw === 'production'
+      ? Environment.PROD
+      : paraEnvRaw === 'dev' || paraEnvRaw === 'development'
+      ? Environment.DEV
+      : Environment.BETA;
   
   // Get Helius RPC URL from environment
   const heliusApiKey = import.meta.env.VITE_HELIUS_API_KEY || '';
@@ -37,7 +44,7 @@ export const ParaProvider: FC<ParaProviderProps> = ({ children }) => {
     <QueryClientProvider client={paraQueryClient}>
       <ParaSDKProvider
         paraClientConfig={{
-          env: Environment.BETA, // Use Environment.PROD for production
+          env: paraEnv,
           apiKey: paraApiKey,
         }}
         externalWalletConfig={{
