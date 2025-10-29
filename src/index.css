@@ -119,7 +119,7 @@ All colors MUST be HSL.
 /* Wallet Adapter button tweaks for better mobile fit */
 .wallet-adapter-button {
   background-color: transparent;
-  border: none;
+  border: 1px solid hsl(var(--border));
   color: var(--foreground);
   cursor: pointer;
   display: flex;
