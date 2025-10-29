@@ -34,7 +34,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen flex flex-col pb-16 md:pb-0 bg-gradient-to-br from-background via-primary/5 to-accent/5">
-      <HeaderBar title={t('landing.title')} />
+      <HeaderBar title={t('landing.title')} titleShort={t('landing.titleShort')} />
       <div className="container mx-auto px-4 py-16 max-w-6xl flex-1">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

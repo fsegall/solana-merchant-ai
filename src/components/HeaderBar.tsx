@@ -22,9 +22,10 @@ import {
 interface HeaderBarProps {
   showBack?: boolean;
   title?: string;
+  titleShort?: string; // shown on extra-small screens
 }
 
-export function HeaderBar({ showBack, title }: HeaderBarProps) {
+export function HeaderBar({ showBack, title, titleShort }: HeaderBarProps) {
   const navigate = useNavigate();
   const { flags } = useMerchant();
   const { lang, setLanguage, t } = useTranslation();
@@ -98,14 +99,20 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
               <ArrowLeft className="h-4 w-4" />
             </Button>
           )}
-          {title && <h1 className="text-lg font-semibold">{title}</h1>}
+          {title && (
+            <>
+              {/* Short title on xs, full title from sm+ */}
+              <h1 className="text-base font-semibold sm:hidden">{titleShort || title}</h1>
+              <h1 className="hidden sm:block text-lg font-semibold">{title}</h1>
+            </>
+          )}
           {flags && flags.demoMode && <Badge variant="secondary">Demo</Badge>}
         </div>
 
         {/* Mobile (xs) compact controls */}
         <div className="flex items-center gap-1 sm:hidden">
           {/* Wallet */}
-          <WalletMultiButton />
+          <WalletMultiButton className="h-8 px-2 text-xs leading-none sm:h-9 sm:px-3 sm:text-sm" />
           {/* Voice */}
           <Popover>
             <PopoverTrigger asChild>
@@ -137,7 +144,7 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
 
         {/* Desktop / sm+ full controls */}
         <div className="hidden sm:flex items-center gap-2">
-          <WalletMultiButton />
+          <WalletMultiButton className="h-9 px-3 text-sm leading-none" />
           <Button 
             variant="outline" 
             size="sm" 

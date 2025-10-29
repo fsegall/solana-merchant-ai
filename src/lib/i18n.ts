@@ -13,6 +13,7 @@ export const translations = {
 
     // Landing
     'landing.title': 'Merchant AI Checkout',
+    'landing.titleShort': 'Checkout',
     'landing.subtitle': 'Accept crypto on Solana with optional PIX settlement',
     'landing.openPos': 'Open POS',
     'landing.demo': 'Demo Mode',
@@ -167,6 +168,7 @@ export const translations = {
 
     // Landing
     'landing.title': 'Checkout Merchant AI',
+    'landing.titleShort': 'Checkout',
     'landing.subtitle': 'Aceite crypto em Solana com liquidação PIX opcional',
     'landing.openPos': 'Abrir PDV',
     'landing.demo': 'Modo Demo',
