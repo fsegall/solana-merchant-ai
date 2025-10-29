@@ -102,7 +102,7 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
           {flags && flags.demoMode && <Badge variant="secondary">Demo</Badge>}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
           {/* Solana Wallet Button */}
           <WalletMultiButton />
           
@@ -115,8 +115,8 @@ export function HeaderBar({ showBack, title }: HeaderBarProps) {
             aria-label={t('header.disconnect')}
             title={t('header.disconnect')}
           >
-            <LogOut className="h-4 w-4 mr-1.5" />
-            {t('header.logout')}
+            <LogOut className="h-4 w-4 mr-0 sm:mr-1.5" />
+            <span className="hidden sm:inline">{t('header.logout')}</span>
           </Button>
           
           <Popover>
