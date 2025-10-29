@@ -67,10 +67,10 @@ export default function Auth() {
           <p className="text-muted-foreground">{t('auth.subtitle')}</p>
         </div>
 
-        <Tabs defaultValue="passkey" className="w-full">
+        <Tabs defaultValue="email" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="passkey">
-              {t('auth.passkey')}
+              {t('auth.passkey')} (Beta)
             </TabsTrigger>
             <TabsTrigger value="email">
               {t('auth.email')}
@@ -78,6 +78,13 @@ export default function Auth() {
           </TabsList>
 
           <TabsContent value="passkey">
+            <Card className="mb-4 border-orange-500/50 bg-orange-500/10">
+              <CardContent className="pt-6">
+                <p className="text-sm text-center text-orange-600 dark:text-orange-400">
+                  ⚠️ Passkeys are in beta and not fully tested. Please use email & password for demo.
+                </p>
+              </CardContent>
+            </Card>
             <PasskeyOnboarding />
           </TabsContent>
 
