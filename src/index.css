@@ -115,3 +115,28 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Wallet Adapter button tweaks for better mobile fit */
+.wallet-adapter-button {
+  background-color: transparent;
+  border: none;
+  color: var(--foreground);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-family: DM Sans, Roboto, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  height: 36px;
+  line-height: 20px;
+  padding: 0 12px;
+  border-radius: 8px;
+}
+
+@media (min-width: 640px) {
+  .wallet-adapter-button {
+    font-size: 16px;
+    height: 40px;
+    padding: 0 16px;
+  }
+}
