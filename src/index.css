@@ -131,6 +131,11 @@ All colors MUST be HSL.
   line-height: 20px;
   padding: 0 12px;
   border-radius: 8px;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.wallet-adapter-button:hover {
+  background-color: hsl(var(--secondary));
 }
 
 @media (min-width: 640px) {
