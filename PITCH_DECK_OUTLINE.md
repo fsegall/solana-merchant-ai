@@ -199,32 +199,14 @@
 
 ## 📝 Content for Canva AI Prompt
 
-**Use this prompt in Canva AI**:
+**Use this prompt in Canva AI** (condensed version):
 
 ```
-Create a professional pitch deck for "Solana Merchant AI - AI-Powered Crypto POS"
-
-Theme: Modern, tech-forward, Solana purple (#9945FF)
-Style: Clean, minimalist, professional
-Slides: 12 slides for a 3-minute pitch
-Key colors: #9945FF (Solana purple), #14F195 (Solana green), tech blue
-Tone: Confident, innovative, accessible
-
-Slide topics:
-1. Title slide
-2. The Problem (crypto acceptance is hard)
-3. Our Solution (AI + multi-token + settlement)
-4. Live Demo (show flow)
-5. Tech Stack
-6. Market Opportunity
-7. Team
-8. Competitive Advantage
-9. Business Model
-10. Traction
-11. Roadmap
-12. Call to Action
-
-Include icons, diagrams, and make it visually engaging.
+Create pitch deck: "Solana Merchant AI - AI-Powered Crypto POS"
+12 slides: 1)Title 2)Problem 3)Solution 4)Demo 5)Tech 6)Market 7)Team 8)Advantage 9)Model 10)Traction 11)Roadmap 12)CTA
+Colors: #9945FF purple, #14F195 green, tech blue
+Style: Modern, minimalist, professional
+Include icons & visuals. 3-min pitch.
 ```
 
 ---
