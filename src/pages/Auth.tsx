@@ -7,8 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast } from 'sonner';
 import { PasskeyOnboarding } from '@/components/PasskeyOnboarding';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useTranslation } from '@/lib/i18n';
 
 export default function Auth() {
+  const { t } = useTranslation();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,25 +26,25 @@ export default function Auth() {
       if (isSignUp) {
         const { error } = await signUp(email, password);
         if (error) {
-          // Detecta se usuário já está registrado
-          if (error.message?.includes('already registered') || error.status === 422) {
-            toast.error('Este email já está registrado. Faça login ao invés disso.');
-            setIsSignUp(false);
+            // Detecta se usuário já está registrado
+            if (error.message?.includes('already registered') || error.status === 422) {
+              toast.error(t('auth.alreadyRegistered'));
+              setIsSignUp(false);
+            } else {
+              toast.error(error.message);
+            }
           } else {
-            toast.error(error.message);
+            toast.success(t('auth.accountCreated'));
+            setIsSignUp(false);
           }
         } else {
-          toast.success('Conta criada! Faça login para continuar.');
-          setIsSignUp(false);
-        }
-      } else {
-        const { error } = await signIn(email, password);
-        if (error) {
-          console.error('Erro de login:', error);
-          toast.error(error.message || 'Erro ao fazer login');
-        } else {
-          console.log('Login bem-sucedido, redirecionando...');
-          toast.success('Login realizado com sucesso!');
+          const { error } = await signIn(email, password);
+          if (error) {
+            console.error('Erro de login:', error);
+            toast.error(error.message || t('auth.loginError'));
+          } else {
+            console.log('Login bem-sucedido, redirecionando...');
+            toast.success(t('auth.loginSuccess'));
           // Pequeno delay para garantir que o estado foi atualizado
           setTimeout(() => {
             navigate('/');
@@ -51,7 +53,7 @@ export default function Auth() {
       }
     } catch (error) {
       console.error('Erro no handleSubmit:', error);
-      toast.error('Erro ao processar requisição');
+      toast.error(t('auth.requestError'));
     } finally {
       setLoading(false);
     }
@@ -61,17 +63,17 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">Solana Merchant AI</h1>
-          <p className="text-muted-foreground">Escolha como deseja autenticar</p>
+          <h1 className="text-4xl font-bold mb-2">{t('auth.title')}</h1>
+          <p className="text-muted-foreground">{t('auth.subtitle')}</p>
         </div>
 
         <Tabs defaultValue="passkey" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="passkey">
-              🔐 Passkeys (Recomendado)
+              {t('auth.passkey')}
             </TabsTrigger>
             <TabsTrigger value="email">
-              📧 Email & Senha
+              {t('auth.email')}
             </TabsTrigger>
           </TabsList>
 
@@ -82,11 +84,9 @@ export default function Auth() {
           <TabsContent value="email">
             <Card className="w-full">
               <CardHeader>
-                <CardTitle>{isSignUp ? 'Criar Conta' : 'Login'}</CardTitle>
+                <CardTitle>{isSignUp ? t('auth.createAccount') : t('auth.login')}</CardTitle>
                 <CardDescription>
-                  {isSignUp
-                    ? 'Crie uma nova conta para acessar o sistema'
-                    : 'Entre com suas credenciais'}
+                  {isSignUp ? t('auth.createAccountDesc') : t('auth.loginDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -94,7 +94,7 @@ export default function Auth() {
                   <div>
                     <Input
                       type="email"
-                      placeholder="Email"
+                      placeholder={t('auth.emailPlaceholder')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -103,7 +103,7 @@ export default function Auth() {
                   <div>
                     <Input
                       type="password"
-                      placeholder="Senha"
+                      placeholder={t('auth.passwordPlaceholder')}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -111,7 +111,7 @@ export default function Auth() {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Processando...' : isSignUp ? 'Criar Conta' : 'Entrar'}
+                    {loading ? t('auth.processing') : isSignUp ? t('auth.createAccountButton') : t('auth.loginButton')}
                   </Button>
                 </form>
 
@@ -121,7 +121,7 @@ export default function Auth() {
                     onClick={() => setIsSignUp(!isSignUp)}
                     className="text-sm text-muted-foreground hover:text-foreground"
                   >
-                    {isSignUp ? 'Já tem conta? Faça login' : 'Não tem conta? Crie uma'}
+                    {isSignUp ? t('auth.alreadyHaveAccount') : t('auth.noAccount')}
                   </button>
                 </div>
               </CardContent>
