@@ -11,7 +11,11 @@
 
 ---
 
-## 🎯 Quick Links
+## 🚀 Live Demo
+
+**🌐 Production URL:** [https://pos-cashier-eight.vercel.app/](https://pos-cashier-eight.vercel.app/)
+
+### 🎯 Quick Links
 
 - 📖 **[Hackathon Demo Guide](HACKATHON_DEMO_GUIDE.md)** - Complete testing guide for judges and testers
 - 🏆 **[Hackathon Submission](HACKATHON_SUBMISSION.md)** - Submission details and checklist

@@ -67,7 +67,7 @@
 - ✅ **Name**: Solana Merchant AI
 - ✅ **One-liner**: "AI-powered crypto POS with global settlement"
 - ✅ **Repository**: https://github.com/fsegall/solana-merchant-pay
-- ⏳ **Demo**: To be deployed
+- ✅ **Live Demo**: https://pos-cashier-eight.vercel.app/
 - ⏳ **Pitch Video**: To be recorded
 - ⏳ **Technical Video**: To be recorded
 
@@ -292,12 +292,12 @@ psql postgresql://postgres:postgres@127.0.0.1:54322/postgres \
 ## 📞 Contact
 
 - **GitHub**: https://github.com/fsegall/solana-merchant-pay
-- **Email**: [Your Email]
-- **Twitter**: [Your Handle]
-- **Demo**: [Your Demo URL]
+- **Live Demo**: https://pos-cashier-eight.vercel.app/
+- **Email**: fsegall@gmail.com
+- **Twitter**: @fsegall
 
 ---
 
 **Status**: ✅ Ready for submission
-**Last Updated**: October 8, 2025
+**Last Updated**: October 29, 2025
 
