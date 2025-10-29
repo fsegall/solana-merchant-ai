@@ -128,7 +128,7 @@ All colors MUST be HSL.
   font-size: 14px;
   font-weight: 600;
   height: 36px;
-  line-height: 20px;
+  line-height: 15px;
   padding: 0 12px;
   border-radius: 8px;
   transition: background-color .15s ease, color .15s ease, border-color .15s ease;
