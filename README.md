@@ -1,13 +1,18 @@
 # 🤖 Solana Merchant AI
 
-> **AI-powered crypto POS** that helps merchants accept Solana payments (100+ tokens via Jupiter), automate settlement (Wise/Circle), and get real-time insights via **chat and voice assistants**.
+> **AI-powered mobile-first crypto POS** that helps merchants accept Solana payments (100+ tokens via Jupiter), automate settlement (Wise/Circle), and get real-time insights via **chat and voice assistants**.
 
 ### 🌟 Key Differentiators:
+- 📱 **Mobile-First PWA** - Works on any smartphone, no app install needed
 - 🤖 **AI Chat Assistant** - Natural language payment queries and automation
 - 🎤 **Voice Commands** - Hands-free operation with OpenAI Realtime API
 - 🪐 **Multi-Token Support** - Accept SOL, USDC, BONK, JUP, +100 SPL tokens (Jupiter)
 - 🌍 **Global Settlement** - BRZ (Brazil), USDC (USA), EURC (Europe) via Wise/Circle
 - 💎 **Crypto-First** - Merchant chooses: keep crypto, swap, or settle to fiat
+
+### 📍 Current Status:
+- ✅ **MVP Deployed** - PWA (Progressive Web App) fully functional
+- 🔄 **Roadmap Available** - See [POS_ROADMAP.md](POS_ROADMAP.md) for evolution: Web App → Mobile App → POS Hardware → SDK
 
 ---
 
@@ -275,26 +280,31 @@ supabase/
 
 ## 🎯 Roadmap
 
-### 🟢 Current Phase - Web MVP
+### 🟢 Phase 1 - PWA MVP (Current ✅)
 - [x] Authentication system
 - [x] Basic POS interface
 - [x] Receipt management
 - [x] Functional demo mode
-- [x] Basic PWA
+- [x] PWA deployable (works on mobile browsers)
 
-### 🟡 Next Phase - Advanced Features
-- [ ] Jupiter auto-swap integration (multi-token acceptance)
-- [ ] Complete Passkey authentication (Web3Auth/Para integration)
-- [ ] Smart contract integration (Anchor)
-- [ ] Mobile app (PWA → native)
+### 🟡 Phase 2 - Mobile App (Planned)
+- [ ] Native Android app (Capacitor/React Native)
+- [ ] Camera & Bluetooth printer integration
+- [ ] Offline mode (store & forward)
+- [ ] Push notifications
 
-### 🔵 Future Phase - Advanced Features
-- [ ] Advanced reporting & analytics
-- [ ] Complete Passkey integration with social login
-- [ ] Thermal printer integration
-- [ ] Android APK & iOS app
-- [ ] Multi-language support (EN/ES/FR/DE)
-- [ ] Loyalty program (NFT receipts)
+### 🔵 Phase 3 - POS Hardware Integration (2026)
+- [ ] Android POS terminals (Sunmi, PAX, Ingenico)
+- [ ] Direct installation on POS hardware
+- [ ] NFC tap support
+- [ ] Thermal printer native integration
+
+### 🚀 Phase 4 - SDK & OEM (Vision)
+- [ ] Crypto gateway SDK for POS manufacturers
+- [ ] Multi-chain support (Solana, Stellar, Polygon)
+- [ ] White-label licensing
+
+**📖 Full roadmap**: See [POS_ROADMAP.md](POS_ROADMAP.md) for detailed integration strategy.
 
 ---
 
