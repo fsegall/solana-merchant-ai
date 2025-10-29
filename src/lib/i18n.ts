@@ -126,7 +126,7 @@ export const translations = {
     // Auth
     'auth.title': 'Solana Merchant AI',
     'auth.subtitle': 'Choose how you want to authenticate',
-    'auth.passkey': '🔐 Passkeys (Recommended)',
+    'auth.passkey': '🔐 Passkeys',
     'auth.email': '📧 Email & Password',
     'auth.createAccount': 'Create Account',
     'auth.login': 'Login',
@@ -280,7 +280,7 @@ export const translations = {
     // Auth
     'auth.title': 'Solana Merchant AI',
     'auth.subtitle': 'Escolha como deseja autenticar',
-    'auth.passkey': '🔐 Passkeys (Recomendado)',
+    'auth.passkey': '🔐 Passkeys',
     'auth.email': '📧 Email & Senha',
     'auth.createAccount': 'Criar Conta',
     'auth.login': 'Login',
