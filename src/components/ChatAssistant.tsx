@@ -7,8 +7,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from '@/lib/i18n';
-import { EDGE_FUNCTIONS_BASE, ENABLE_ASSISTED_CHARGE } from '@/config';
+import { EDGE_FUNCTIONS_BASE, ENABLE_ASSISTED_CHARGE, MERCHANT_RECIPIENT } from '@/config';
 import { supabaseHelpers } from '@/lib/supabase-helpers';
+import { SolanaPayQR } from '@/components/SolanaPayQR';
+import { useNavigate } from 'react-router-dom';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -17,6 +19,7 @@ interface Message {
 }
 
 export function ChatAssistant() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { t, lang } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -24,6 +27,7 @@ export function ChatAssistant() {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const [inlineCharge, setInlineCharge] = useState<{ amount: number; ref: string } | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -120,14 +124,20 @@ export function ChatAssistant() {
         try {
           const ref = `REF${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
           await supabaseHelpers.createInvoiceWithPayment(Number(data.amountBRL), ref, []);
+          // Inline QR (if merchant recipient is configured)
+          if (MERCHANT_RECIPIENT) {
+            setInlineCharge({ amount: Number(data.amountBRL), ref });
+          }
           setMessages((prev) => [
             ...prev,
             {
               role: 'assistant',
-              content: `Charge created: R$ ${Number(data.amountBRL).toFixed(2)} — Ref: ${ref}. Open POS to view the QR.`,
+              content: `Charge created: R$ ${Number(data.amountBRL).toFixed(2)} — Ref: ${ref}. Redirecting to POS...`,
               timestamp: new Date(),
             },
           ]);
+          // Redirect to POS with ref so cashier can see the full panel
+          setTimeout(() => navigate(`/pos?ref=${encodeURIComponent(ref)}`), 800);
         } catch (e) {
           console.error('Assisted charge error:', e);
         }
@@ -263,6 +273,18 @@ export function ChatAssistant() {
                   </p>
                 </div>
               </CardContent>
+              {/* Inline QR preview for assisted charge */}
+              {ENABLE_ASSISTED_CHARGE && inlineCharge && MERCHANT_RECIPIENT && (
+                <div className="p-4 border-t bg-muted/30">
+                  <SolanaPayQR
+                    recipient={MERCHANT_RECIPIENT}
+                    amount={inlineCharge.amount}
+                    receiptRef={inlineCharge.ref}
+                    label={`Chat charge R$ ${inlineCharge.amount.toFixed(2)}`}
+                    message={`Ref ${inlineCharge.ref}`}
+                  />
+                </div>
+              )}
             </Card>
           </motion.div>
         )}
