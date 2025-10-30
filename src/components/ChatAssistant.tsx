@@ -28,27 +28,37 @@ export function ChatAssistant() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Initialize greeting message
+  // Initialize greeting message once
   useEffect(() => {
     if (messages.length === 0) {
-      setMessages([{
-        role: 'assistant',
-        content: t('chat.greeting'),
-        timestamp: new Date(),
-      }]);
+      setMessages([
+        {
+          role: 'assistant',
+          content: t('chat.greeting'),
+          timestamp: new Date(),
+        },
+      ]);
     }
-  }, [t, messages.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Update greeting when language changes
+  // Update greeting when language changes (avoid loops)
   useEffect(() => {
     if (messages.length === 1 && messages[0].role === 'assistant') {
-      setMessages([{
-        role: 'assistant',
-        content: t('chat.greeting'),
-        timestamp: new Date(),
-      }]);
+      const newGreeting = t('chat.greeting');
+      if (messages[0].content !== newGreeting) {
+        setMessages([
+          {
+            role: 'assistant',
+            content: newGreeting,
+            timestamp: new Date(),
+          },
+        ]);
+      }
     }
-  }, [lang, t]);
+    // Depend only on lang to avoid re-running when translation function identity changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
   useEffect(() => {
     scrollToBottom();
