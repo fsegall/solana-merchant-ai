@@ -296,6 +296,9 @@ supabase/
 - [ ] Offline mode (store & forward)
 - [ ] Push notifications
 
+### 🟡 Phase 2 - Near-term enhancements (High impact)
+- [ ] Chat/Voice: one-shot "create charge" intent → generate Solana Pay QR (ETA: hours)
+
 ### 🔵 Phase 3 - POS Hardware Integration (2026)
 - [ ] Android POS terminals (Sunmi, PAX, Ingenico)
 - [ ] Direct installation on POS hardware
