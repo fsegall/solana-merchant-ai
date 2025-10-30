@@ -62,18 +62,13 @@ export function VoiceInput() {
       const token = session.data?.session?.access_token;
       if (!token) throw new Error('no auth token');
 
-      // 1a) Get context from Edge Function
+      // 1a) Get context from Edge Function (use supabase.functions.invoke to avoid CORS issues)
       console.log('📊 Fetching payment context...');
-      const contextRes = await fetch(`${EDGE_FUNCTIONS_BASE}/voice-context`, {
-        method: 'GET',
-        headers: { 
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
       let contextText = '';
-      if (contextRes.ok) {
-        const contextData = await contextRes.json();
+      const { data: contextData, error: contextError } = await supabase.functions.invoke('voice-context', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!contextError && contextData) {
         const invoices = contextData.context?.recentInvoices || [];
         if (invoices.length > 0) {
           const invoiceList = invoices.map((inv: any) => 
@@ -84,21 +79,13 @@ export function VoiceInput() {
         }
       }
 
-      const r = await fetch(`${EDGE_FUNCTIONS_BASE}/openai-realtime-token`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({})
+      const { data, error: tokenError } = await supabase.functions.invoke('openai-realtime-token', {
+        body: {},
+        headers: { Authorization: `Bearer ${token}` },
       });
-      
-      if (!r.ok) {
-        const errorText = await r.text();
-        throw new Error(`Token error ${r.status}: ${errorText}`);
+      if (tokenError) {
+        throw new Error(`Token error: ${tokenError.message}`);
       }
-      
-      const data = await r.json();
       const apiKey = data.apiKey;
       const model = data.model || 'gpt-4o-realtime-preview-2024-12-17';
       
