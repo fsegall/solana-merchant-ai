@@ -112,6 +112,13 @@ open http://localhost:5173
 3. Approve connection
 4. Verify it shows your address
 
+**Note on Passkey Authentication (Beta):**
+- ⚠️ Passkey login is **implemented but not yet tested** on physical devices
+- ✅ Code is complete: Para SDK integrated, UI flow ready
+- ⏳ Requires iPhone with Face ID / iOS device for full testing
+- 📝 **For reliable demo:** Use email/password authentication (fully tested)
+- 🔐 Passkey tab available at `/auth` for future validation
+
 ### 4.2 Create a Charge
 1. Navigate to **POS** (point of sale)
 2. Enter an amount: **R$ 10.00** (or any value)

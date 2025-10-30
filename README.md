@@ -160,9 +160,12 @@ See [scripts/README.md](scripts/README.md) for details.
 - Multi-merchant support with RLS (Row-Level Security)
 - Role-based permissions (owner, manager, cashier)
 - Feature flags per merchant
-- **Passkey Status** - UI ready, partial integration (Post-hackathon)
-  - Para Provider configured with Helius RPC
-  - Needs Web3Auth for social login (Google/Apple)
+- **Passkey Status** - ⚠️ Implementation Complete, Awaiting Device Testing
+  - ✅ Para Provider configured with environment variables (`VITE_PARA_API_KEY`, `VITE_PARA_ENV`)
+  - ✅ PasskeyOnboarding component implemented
+  - ✅ UI flow ready for Face ID / Touch ID / Windows Hello
+  - ⏳ **Not tested on physical devices yet** (requires iPhone with Face ID for full validation)
+  - 📝 Note: For demo purposes, use email/password authentication (fully tested and functional)
 
 ### ✅ POS (Point of Sale)
 - Mobile-first responsive interface
