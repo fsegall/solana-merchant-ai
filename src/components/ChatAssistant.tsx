@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from '@/lib/i18n';
-import { EDGE_FUNCTIONS_BASE } from '@/config';
+import { EDGE_FUNCTIONS_BASE, ENABLE_ASSISTED_CHARGE } from '@/config';
+import { supabaseHelpers } from '@/lib/supabase-helpers';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -113,6 +114,24 @@ export function ChatAssistant() {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+
+      // Assisted charge intent (flagged)
+      if (ENABLE_ASSISTED_CHARGE && data?.intent === 'create_charge' && typeof data?.amountBRL === 'number') {
+        try {
+          const ref = `REF${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+          await supabaseHelpers.createInvoiceWithPayment(Number(data.amountBRL), ref, []);
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: 'assistant',
+              content: `Charge created: R$ ${Number(data.amountBRL).toFixed(2)} — Ref: ${ref}. Open POS to view the QR.`,
+              timestamp: new Date(),
+            },
+          ]);
+        } catch (e) {
+          console.error('Assisted charge error:', e);
+        }
+      }
     } catch (error) {
       console.error('Chat error:', error);
       toast({

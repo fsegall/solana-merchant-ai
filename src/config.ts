@@ -15,6 +15,7 @@ export const EDGE_FUNCTIONS_BASE = SUPABASE_URL
 // Solana Configuration
 export const SOLANA_NETWORK = import.meta.env.VITE_SOLANA_NETWORK || 'devnet';
 export const MERCHANT_RECIPIENT = import.meta.env.VITE_MERCHANT_RECIPIENT || '';
+export const ENABLE_ASSISTED_CHARGE = (import.meta.env.VITE_ENABLE_ASSISTED_CHARGE || 'false') === 'true';
 
 // Log configuration in development
 if (import.meta.env.DEV) {
@@ -23,6 +24,7 @@ if (import.meta.env.DEV) {
     EDGE_FUNCTIONS_BASE,
     SOLANA_NETWORK,
     MERCHANT_RECIPIENT: MERCHANT_RECIPIENT ? 'SET' : 'NOT SET',
+    ENABLE_ASSISTED_CHARGE,
   });
 }
 
