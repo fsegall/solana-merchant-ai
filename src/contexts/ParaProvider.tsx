@@ -40,6 +40,13 @@ export const ParaProvider: FC<ParaProviderProps> = ({ children }) => {
     ? `https://${network}.helius-rpc.com/?api-key=${heliusApiKey}`
     : `https://api.${network}.solana.com`;
 
+  // If no API key, skip Para SDK initialization and just render children
+  // This prevents the app from breaking if Para is not configured
+  if (!paraApiKey || paraApiKey.trim() === '') {
+    console.warn('⚠️ Para SDK: API key not configured. Passkey features will be disabled.');
+    return <QueryClientProvider client={paraQueryClient}>{children}</QueryClientProvider>;
+  }
+
   return (
     <QueryClientProvider client={paraQueryClient}>
       <ParaSDKProvider
